@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hjcrm.entity">	
+	<!-- 获取安全合规用例的列表 -->
+	<select id="querySecurityList" resultType="com.hjcrm.system.entity.SecurityCheckList">
+		select 
+			checkListTab.id, checkListTab.description, checkListTab.url, checkListTab.name,
+			checkListTab.result
+		from security_platform.security_usecase as checkListTab
+		ORDER BY checkListTab.create_time DESC
+	</select>
+</mapper> 
