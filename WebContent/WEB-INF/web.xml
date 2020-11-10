@@ -13,7 +13,7 @@
 	</listener>
   <!-- SpringMVC配置文件信息 -->
   <servlet>
-    <servlet-name>crm_16</servlet-name>
+    <servlet-name>security_check_platform</servlet-name>
     <servlet-class>
   				org.springframework.web.servlet.DispatcherServlet
   	</servlet-class>
@@ -26,7 +26,7 @@
   </servlet>
   <!-- 请求后缀拦截.do（后台管理系统），.html（前端网站） -->
   <servlet-mapping>
-        <servlet-name>crm_16</servlet-name>
+        <servlet-name>security_check_platform</servlet-name>
         <url-pattern>*.do</url-pattern>
   </servlet-mapping>
   

@@ -33,11 +33,9 @@ import com.hjcrm.publics.util.JackSonUtils;
 import com.hjcrm.publics.util.UserContext;
 import com.hjcrm.publics.websocket.entity.WebSocketNeedBean;
 import com.hjcrm.resource.entity.Dealrecord;
-import com.hjcrm.resource.entity.Matchinfo;
 import com.hjcrm.resource.entity.Resource;
 import com.hjcrm.resource.entity.Student;
 import com.hjcrm.resource.entity.Visitrecord;
-import com.hjcrm.resource.service.IMatchinfoService;
 import com.hjcrm.resource.service.IResourceService;
 import com.hjcrm.resource.service.IStudentService;
 import com.hjcrm.resource.util.ExcelExportUtil;
@@ -55,8 +53,6 @@ public class StudentController extends BaseController {
 	
 	@Autowired
 	private IStudentService studentService;
-	@Autowired
-	private IMatchinfoService matchinfoService;
 	@Autowired
 	private IResourceService resourceService;
 	@Autowired
@@ -803,125 +799,6 @@ public class StudentController extends BaseController {
 			return ReturnConstants.SUCCESS;
 		}
 		return ReturnConstants.PARAM_NULL;
-	}
-	
-	/**
-	 * 匹配到账
-	 * @param request
-	 * @param resourceIds 资源ID，用逗号隔开
-	 * @param studentIds 学员ID，用逗号隔开
-	 * @param matchInfoIds 财务到账数据ID，用逗号隔开
-	 * @param student 
-	 * @param studentNames  代汇款人，用逗号隔开
-	 * @param matchinfoNames 财务到账数据姓名，用逗号隔开
-	 * @return
-	 * @author  
-	 * @date 2020-09-21 下午1:44:09
-	 */
-	@RequestMapping(value = "/student/matchMoney.do",method = RequestMethod.POST)
-	public @ResponseBody String matchMoney(HttpServletRequest request,String resourceIds,String studentIds,String matchInfoIds,Student student,String remitusers,String matchinfoNames){
-		if (studentIds != null && !"".equals(studentIds) && matchInfoIds != null && !"".equals(matchInfoIds)) {
-			if (!(remitusers != null && !"".equals(remitusers.trim()) && matchinfoNames != null && !"".equals(matchinfoNames.trim()))) {
-				return ReturnConstants.REMIT_USER;//代汇款人为空，不能进行匹配到账
-			}
-			//学员-确认到账时间，收款金额，收款时间，汇款方式（姓名重复的学员，需要单个去确认提交，非重复姓名的学员，可批量并按照姓名对应确认）
-			if (remitusers != null && !"".equals(remitusers.trim()) && matchinfoNames != null && !"".equals(matchinfoNames.trim())) {
-				String[] remituser = remitusers.split(",");
-				String[] matchinfoName = matchinfoNames.split(",");
-				int ishavename = 0;
-				/**
-				 *支持1对1，支持1对多，支持多对多(无重复姓名)
-				 **/
-				for (int i = 0; i < remituser.length; i++) {
-					String sname = remituser[i];
-					List<Student> SumPayMoney = null;
-					if (remituser.length > 1 && matchinfoName.length == 1) {//多对1
-						SumPayMoney = studentService.queryStudentSumPayMoney(sname);
-					}else if(remituser.length == 1 && matchinfoName.length == 1){//1对1
-						SumPayMoney = studentService.queryStudentSumPayMoney(sname);
-					}else if(remituser.length == 1 && matchinfoName.length > 1){//1对多
-						SumPayMoney = studentService.queryStudentSumPayMoney(sname);
-					}
-					for (int j = 0; j < matchinfoName.length; j++) {
-						String mname = matchinfoName[j];
-						List<Student> studentlist = studentService.queryStudentBysname(sname);//学员信息
-						if (studentlist != null && studentlist.size() > 0) {
-							if (sname.trim().equals(mname.trim())) {//匹配成功
-								//取财务表的收款时间，汇款方式，收款金额，对应到学员表
-								List<Matchinfo> matchinfolist = null;
-								if(remituser.length == 1 && matchinfoName.length == 1){//1对1
-									Matchinfo matchinfo = new Matchinfo();matchinfo.setMatchInfoId(Long.valueOf(matchInfoIds));
-									matchinfolist = matchinfoService.queryMatchinfo(matchinfo, null);
-								}else{
-									matchinfolist = matchinfoService.queryMatchinfoBymname(mname);
-								}
-								if (matchinfolist != null && matchinfolist.size() > 0) {
-									/**
-									 * 多对1:校验：成交金额+网络培训费金额 =？ 财务的收款金额	，如果相等则继续确认，如果不想等，则不能确认
-									 */
-									if ((remituser.length > 1 && matchinfoName.length == 1) || (remituser.length == 1 && matchinfoName.length == 1)) {//多对1，1对1
-										if (SumPayMoney != null && SumPayMoney.size() > 0 && Double.valueOf(SumPayMoney.get(0).getSumPayMoney()).longValue() == Double.valueOf(matchinfolist.get(0).getPayMoney()).longValue()) {//相等
-											for (int k = 0; k < studentlist.size(); k++) {
-												Double arrviemoneysum = Double.valueOf(studentlist.get(k).getDealprice()) + Double.valueOf(studentlist.get(k).getNetedumoney()== null || "".equals(studentlist.get(k).getNetedumoney())?"0":studentlist.get(k).getNetedumoney());
-												studentlist.get(k).setArrive_money(String.valueOf(arrviemoneysum));//收款金额 = 成交金额 + 网络培训费 
-												studentlist.get(k).setArrive_time(String.valueOf(matchinfolist.get(0).getReceiveTime()));//收款时间
-												studentlist.get(k).setRemitWay(matchinfolist.get(0).getPayType());//汇款方式
-											}
-										}else{
-											return ReturnConstants.NO_MATCHINFO;//成交金额+网络培训费 != 收款金额，不能进行确认对账
-										}
-									}else{
-										for (int k = 0; k < studentlist.size(); k++) {
-											studentlist.get(k).setArrive_money(matchinfolist.get(0).getPayMoney());//收款金额
-											studentlist.get(k).setArrive_time(String.valueOf(matchinfolist.get(0).getReceiveTime()));//收款时间
-											studentlist.get(k).setRemitWay(matchinfolist.get(0).getPayType());//汇款方式
-										}
-									}
-									for (int k = 0; k < studentlist.size(); k++) {
-										studentlist.get(k).setMatchinfo_time(new Timestamp(System.currentTimeMillis()));//确认到账时间
-										studentlist.get(k).setStudentstate(StateConstants.studentstate3);//修改学员状态为“已到账”
-										studentService.saveOrUpdate(studentlist.get(k));
-									}
-									//修改资源状态为“已到账”
-									resourceIds = String.valueOf(studentlist.get(0).getResourceId());
-									if (resourceIds != null && !"".equals(resourceIds.trim())) {
-										studentService.updateResourceStudentstate(resourceIds, StateConstants.studentstate3);
-									}
-									//修改财务导入的数据状态为“已匹配”
-									if (matchInfoIds != null && !"".equals(matchInfoIds.trim())) {
-										matchinfoService.updateIsmatch(matchInfoIds, Matchinfo.IS_MATCH_YES);
-									}
-									ishavename++;
-									break;
-								} 
-							}
-						}
-					}
-				}
-				if (ishavename != 0) {
-					sendmessage(WebSocketNeedBean.OBJ_TYPE_LIVE, null,String.valueOf(StateConstants.DEPT_CAIWU), resourceIds, null, "行政部对学员匹配到账成功，请去【到账信息】查看");
-					return ReturnConstants.SUCCESS;
-				}else{
-					return ReturnConstants.MATCHINFO_AND_STUDENT;//两边未有匹配成功学员数据
-				}
-			}
-			return ReturnConstants.REMIT_USER;//代汇款人为空，不能进行匹配到账
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-		
-	/**
-	 * 查询财务到账信息
-	 * @param request
-	 * @return
-	 * @author  
-	 * @date 2020-09-10 上午10:53:33
-	 */
-	@RequestMapping(value = "/student/queryMatchinfo.do",method = RequestMethod.GET)
-	public @ResponseBody String queryMatchinfo(HttpServletRequest request,String matchname,Integer pageSize, Integer currentPage){
-		List<Matchinfo> list = matchinfoService.queryMatchinfo(matchname,processPageBean(pageSize, currentPage));
-		return jsonToPage(list);
 	}
 	
 	/**

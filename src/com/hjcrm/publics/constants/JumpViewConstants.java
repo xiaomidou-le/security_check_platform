@@ -88,7 +88,6 @@ public class JumpViewConstants {
 	/****************************************************财务部*************************************************************************/
 	public static final String FINANCE_NETWORKTRAIN = "finance/networkTrain";//财务部-网络培训费信息页面
 	
-	public static final String MATCHINFO = "finance/macthinfor";//到账信息界面（财务部）
 	
 	public static final String FINANCE_STUDENT = "finance/financeStudentMang";//财务部-总表信息页面
 	
