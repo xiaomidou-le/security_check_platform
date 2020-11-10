@@ -14,33 +14,6 @@ $.ajax({
 	   }  
  	}
 }) 
-//添加今日目标
-$.ajax({        			
-   type: 'GET',
-   data: {
-   		userid:nameid  
-   },
-   url: "/security_check_platform/system/queryTodaynote.do",		   
-   success: function(data) {
-	   var dataObj=eval("("+data+")");//转换为json对象				   
-	   var list = dataObj.rows;
-	   if(list==""||list==null){				   
-			$('#addTarget').css('display','block')		 					
-		}else {
-			$.each(list, function(index, array) {		        	
-				//循环获取数据					
-		     	var note = list[index].note|| "";
-		   		$('#target').html(note);
-		   		$('#target').attr('title',note);
-			 	$('#chTarget').css('display','block')	
-		  		$('#todayVal').val(note);
-	   		});
-		}			   
- 	},
-	error: function (data){
-		console.log(data);
-	}
-})
 		
 //websocket消息推送
 var webSocket = function(id) {
