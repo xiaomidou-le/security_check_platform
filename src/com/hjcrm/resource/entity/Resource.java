@@ -18,7 +18,6 @@ public class Resource extends BaseEntity {
 	private Long resourceId;// 资源主键ID
 	private String billno;// 单据号
 	private Long userid;// 创建人id
-	private Long deptid;//创建人部门ID
 	private Long belongid;// 分配销售人员ID
 	private String createrName;// 资源创建者姓名
 	private Timestamp create_time;// 资源创建时间
@@ -542,14 +541,6 @@ public class Resource extends BaseEntity {
 
 	public void setTodaydkzycount(String todaydkzycount) {
 		this.todaydkzycount = todaydkzycount;
-	}
-
-	public Long getDeptid() {
-		return deptid;
-	}
-
-	public void setDeptid(Long deptid) {
-		this.deptid = deptid;
 	}
 
 	public Integer getStudentstate() {

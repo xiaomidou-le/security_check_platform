@@ -618,65 +618,6 @@ public class StudentController extends BaseController {
 	}
 	
 	/**
-	 * 修改成交记录
-	 * 		已成交，已退回，状态的学员---可以修改成交记录
-	 * @param request
-	 * @param userid
-	 * @param dealrecord
-	 * @param subjects
-	 * @param studentId
-	 * @param student
-	 * @return
-	 * @author  
-	 * @date 2020-09-16 上午11:21:28
-	 */
-	@RequestMapping(value="/student/editDealrecord.do",method = RequestMethod.POST)
-	public @ResponseBody String editDealrecord(HttpServletRequest request,String userid,Dealrecord dealrecord,String subjects,String studentId,Student student){
-		if (studentId != null && !"".equals(studentId.trim())) {
-			List<Student> list = studentService.queryStudents(null,studentId, null,null, null, null);
-			if (list != null && list.size() > 0) {
-				Integer studentstate = list.get(0).getStudentstate();
-				Long resourceId = list.get(0).getResourceId();
-				Long deptid = UserContext.getLoginUser().getDeptid();
-				if (studentstate == StateConstants.studentstate1 || studentstate == StateConstants.studentstate8 || (deptid == StateConstants.DEPT_XINGZHENG)) {//1已成交    8已退回
-					if (subjects != null && !"".equals(subjects.trim())) {
-						String[] subject = subjects.split(",");
-						if (resourceId != null) {
-							resourceService.deleteDealrecord(resourceId, null);
-						}else{
-							resourceService.deleteDealrecord(null, new Long(studentId));
-						}
-						for (int i = 0; i < subject.length; i++) {
-							//2：增加学员的成交记录（弹框填写成交信息）
-							Dealrecord dealrecordafter = new Dealrecord();
-							dealrecordafter.setCourseid(dealrecord.getCourseid());
-							dealrecordafter.setSubjectid(new Long(subject[i]));
-							if (resourceId != null) {
-								dealrecordafter.setResourceId(resourceId);
-							}else{
-								dealrecordafter.setStudentId(new Long(studentId));
-							}
-							resourceService.saveOrUpdate(dealrecordafter);
-						}
-					}
-					list.get(0).setDealprice(student.getDealprice());//成交金额
-					list.get(0).setDealtime(student.getDealtime());//成交时间
-					list.get(0).setIshavenetedu(student.getIshavenetedu());//是否有网络培训费
-					list.get(0).setIsOnlineBuy(student.getIsOnlineBuy());//是否在线购买
-					list.get(0).setNetedumoney(student.getNetedumoney());//网络培训费金额
-					list.get(0).setCourseid(student.getCourseid());//课程
-					list.get(0).setPreferinfo(student.getPreferinfo());//优惠信息
-					list.get(0).setRemituser(student.getRemituser());//代汇款人
-					studentService.saveOrUpdate(list.get(0));
-					return ReturnConstants.SUCCESS;//已成功修改成交记录
-				}
-				return ReturnConstants.USER_NO_POWER;//非已成交或已退回状态的学员，不能修改成交记录
-			}
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	/**
 	 * 增加学员回访记录
 	 * @param request
 	 * @param studentId

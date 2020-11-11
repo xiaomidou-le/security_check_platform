@@ -232,7 +232,6 @@ public class ResourceController extends BaseController{
 						User createuser = userService.queryByIdentity(Long.valueOf(userid));
 						resource.setState(StateConstants.state1);//已分配
 						resource.setAssignTime(new Timestamp(System.currentTimeMillis()));//销售自建的，分配时间显示创建时间
-						resource.setDeptid(createuser.getDeptid());
 						resource.setCreaterName(createuser.getUsername());
 						resource.setBelongid(UserContext.getLoginUser().getUserid());//归属者为自己
 						if(UserContext.getLoginUser().getUserid()==107){//王老师自建的资源渠道为11(公司资源)
@@ -312,120 +311,6 @@ public class ResourceController extends BaseController{
 		}
 		return ReturnConstants.PARAM_NULL;
 	}
-	/**
-	 * 查询资源管理头部统计信息
-	 * @param request
-	 * @param deptid
-	 * @return
-	 * @author  
-	 * @throws ParseException 
-	 * @date 2020-09-2 下午5:04:18
-	 */
-	@RequestMapping(value = "/resource/queryResourceCount.do",method = RequestMethod.GET)
-	public @ResponseBody String queryResourceCount(HttpServletRequest request,String userid,String deptid,String roleid) throws ParseException{
-		if (UserContext.getLoginUser() != null && deptid != null && roleid != null && userid != null) {
-			List<Resource> list = resourceService.queryResourceCount(userid,deptid,roleid);//查询所有历史
-			List<Resource> listtoday = resourceService.queryResourceTodayCount(userid,deptid,roleid);//查询今日数量
-			Timestamp time = new Timestamp(System.currentTimeMillis());
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");  
-			String nowtime = sf.format(time).toString();//当前时间
-	        Calendar cal = Calendar.getInstance();  
-	        cal.setTime(sf.parse(nowtime));  
-	        cal.add(Calendar.DAY_OF_YEAR, +1);  
-	        String nexttime = sf.format(cal.getTime());  
-	        
-			List<Resource> listtodayvirecord = resourceService.queryTodayVirecordResources(deptid,userid,roleid,nowtime,nexttime,null);//今日需要回访的资源
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("list", list);
-			map.put("listtoday", listtoday);
-			map.put("listtodayvirecord", listtodayvirecord.size());
-			return json(map);
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	
-	/**
-	 * 资源转消销售
-	 * @param request
-	 * @param resourceId
-	 * @param belongid
-	 * @return
-	 * @author  
-	 * @date 2020-09-4 下午3:40:47
-	 */
-//	@CacheEvict(value = "baseCache")
-	@RequestMapping(value = "/resource/assignResource.do",method = RequestMethod.POST)
-	public @ResponseBody String assignResource(HttpServletRequest request,String resourceIds,Long belongid){
-		if (resourceIds != null && belongid != null) {
-			User user = UserContext.getLoginUser();
-			if (user != null) {
-				// 资源IDS，归属人id，已分配，分配时间
-				if (resourceIds != null && !"".equals(resourceIds.trim())) {
-					String[] rIds = resourceIds.split(",");
-					for (int i = 0; i < rIds.length; i++) {
-						List<Resource> resource = resourceService.queryResourceByresourceId(Long.valueOf(rIds[i]));
-						Transferrecord tr = groupTransferRecord(resource.get(0).getResourceLevel(),Long.valueOf(rIds[i]), resource.get(0).getPhone(), resource.get(0).getTel(), resource.get(0).getBelongid(), null, belongid, null, StateConstants.state1, resource.get(0).getSource(), resource.get(0).getDeptid());
-						if (tr != null) {
-							transferrecordService.saveTransferRecord(tr);
-						}
-					}
-				}
-				resourceService.zhuanyiResourceBelongid(resourceIds, belongid,StateConstants.state1,new Timestamp(System.currentTimeMillis()));
-				for (String resourceid : resourceIds.split(",")) {
-					List<Visitrecord> listvr = resourceService.queryVisitrecordsByresourceId(Long.parseLong(resourceid), null);
-					if(listvr.size()>0){
-						for (Visitrecord visitrecord : listvr) {
-							resourceService.deleteVisitrecord(visitrecord.getResourceId());
-						}
-						
-					}
-				}
-				String[] resourceIds1 = resourceIds.split(",");
-				sendmessage(WebSocketNeedBean.OBJ_TYPE_LIVE, String.valueOf(belongid),null, resourceIds, null, "运营部有转移给您的资源:"+resourceIds1+"条，请去【资源管理】查看");
-				return ReturnConstants.SUCCESS;
-			}
-			return ReturnConstants.USER_NO_LOGIN;
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	
-	/**
-	 * 资源转移销售
-	 * @param request
-	 * @param resourceId
-	 * @param belongid
-	 * @return
-	 * @author  
-	 * @date 2020-09-4 下午3:40:47
-	 */
-//	@CacheEvict(value = "baseCache")
-	@RequestMapping(value = "/resource/assignResourceAndRecord.do",method = RequestMethod.POST)
-	public @ResponseBody String assignResourceAndRecord(HttpServletRequest request,String resourceIds,Long belongid){
-		if (resourceIds != null && belongid != null) {
-			User user = UserContext.getLoginUser();
-			if (user != null) {
-				// 资源IDS，归属人id，已分配，分配时间
-				if (resourceIds != null && !"".equals(resourceIds.trim())) {
-					String[] rIds = resourceIds.split(",");
-					for (int i = 0; i < rIds.length; i++) {
-						List<Resource> resource = resourceService.queryResourceByresourceId(Long.valueOf(rIds[i]));
-						Transferrecord tr = groupTransferRecord(resource.get(0).getResourceLevel(),Long.valueOf(rIds[i]), resource.get(0).getPhone(), resource.get(0).getTel(), resource.get(0).getBelongid(), null, belongid, null, StateConstants.state1, resource.get(0).getSource(), resource.get(0).getDeptid());
-						if (tr != null) {
-							transferrecordService.saveTransferRecord(tr);
-						}
-					}
-				}
-				resourceService.zhuanyiResourceBelongid(resourceIds, belongid,StateConstants.state1,new Timestamp(System.currentTimeMillis()));
-				String[] resourceIds1 = resourceIds.split(",");
-				sendmessage(WebSocketNeedBean.OBJ_TYPE_LIVE, String.valueOf(belongid),null, resourceIds, null, "运营部有转移给您的资源:"+resourceIds1+"条，请去【资源管理】查看");
-				return ReturnConstants.SUCCESS;
-			}
-			return ReturnConstants.USER_NO_LOGIN;
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
 	
 	/**
 	 * 资源分配
@@ -462,40 +347,6 @@ public class ResourceController extends BaseController{
 			return ReturnConstants.USER_NO_LOGIN;
 		}
 		return ReturnConstants.PARAM_NULL;
-	}
-	
-	
-	/**
-	 * 查询所有销售人员
-	 * @param request
-	 * @return
-	 * @author  
-	 * @date 2020-09-4 下午3:51:48
-	 */
-	@RequestMapping(value = "/resource/queryAllXiaoShou.do",method = RequestMethod.GET)
-	public @ResponseBody String queryAllXiaoShou(HttpServletRequest request){
-		User user = UserContext.getLoginUser();
-		if (user != null && (user.getDeptid().longValue() == StateConstants.DEPT_AFPXC || user.getDeptid().longValue() == StateConstants.DEPT_AFPZLH 
-				||user.getDeptid().longValue() == StateConstants.DEPT_CFPWYL) ) {// AFP、CFP部门招生老师是所有人
-			List<User> list = userService.queryAllusers();
-			return json(list);
-		}
-		List<User> list = resourceService.queryAllXiaoShou();
-		return json(list);
-	}
-	
-	/**
-	 * 查询部门销售人员
-	 * @param request
-	 * @return
-	 * @author  
-	 * @date 2020-9-15 14:34:07
-	 */
-	/*@Cacheable(value = "baseCache", key="#deptid+'queryXiaoShouByRoleid'")*/
-	@RequestMapping(value = "/resource/queryXiaoShouByRoleid.do",method = RequestMethod.GET)
-	public @ResponseBody String queryXiaoShouByRoleid(HttpServletRequest request,String deptid){
-		List<User> list = resourceService.queryXiaoShouByRoleid(deptid);
-		return json(list);
 	}
 	
 	/**
@@ -658,142 +509,6 @@ public class ResourceController extends BaseController{
 			return jsonToPage(listend);
 		}
 		return null;
-	}
-	
-	
-	/**
-	 * 批量导入资源(如果重复，也导入进去，然后查重操作即可)
-	 * @param request
-	 * @param file
-	 * @return
-	 * @author  
-	 * @date 2020-09-1 上午9:26:11
-	 */
-	@RequestMapping(value = "/resource/excelImport.do",method = RequestMethod.POST)
-	public @ResponseBody String excelImport(HttpServletRequest request,@RequestParam("resourceFile")MultipartFile resourceFile,Long deptid){
-		if (resourceFile != null) {
-			//存放路径
-			String realPath = request.getRealPath("");//request.getContextPath();相对路径
-			// www.bakidu.com/queryalluser.do
-			// www.bakidu.com/queryalluser.do/
-			//File.separator = "/"--linux
-			//File.separator = "//"
-			if(!realPath.endsWith(File.separator)){//文件切割符，根据系统不同以不同方式存储
-				realPath += File.separator;
-			}
-			String originalFilename = resourceFile.getOriginalFilename();// 获取原始文件名
-			//年月日文件夹
-			String yearDir = new SimpleDateFormat("yyyyMMdd").format(new Date());
-			//文件名称
-			String fileName = new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date())+originalFilename;
-			String filePath = "upload"+File.separator+"resourcefile"+File.separator+yearDir+File.separator+fileName;;
-			//upload/resourcefile/20170909/12312.xls
-			File destFile = new File(realPath+filePath);
-			if(!destFile.getParentFile().exists()){
-				destFile.getParentFile().mkdirs();//批量创建文件夹
-			}
-			try {
-				resourceFile.transferTo(destFile);//写入服务器
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-			try {
-				//读取excel 
-				FileInputStream is = new FileInputStream(destFile); // 文件流
-				Map<String,Object> returnMaps = ExcelReaderUtil.readExcelContent(deptid,is);//读取excel
-				if (returnMaps.get("listdata")!= null) {
-					//写入数据库
-					List<Resource> listresource = new ArrayList<Resource>();
-					List<Map> listmap = new ArrayList<Map>();
-					String str = null;
-					for (int i = 0; i < returnMaps.size(); i++) {
-						listmap = (List<Map>) returnMaps.get("listdata");
-						for (int j = 0; j < listmap.size(); j++) {
-							Resource resource = new Resource();
-							if (deptid != null && deptid.longValue() == 2 || deptid.longValue() == 30) {//运营部部门
-								str = listmap.get(j).get("userid")!= null && !"".equals(listmap.get(j).get("userid"))?listmap.get(j).get("userid").toString().trim():null;//创建者
-								resource.setUserid(str!=null?new Long(str):null);
-								str = null;
-								
-								str = listmap.get(j).get("createrName")!= null && !"".equals(listmap.get(j).get("createrName"))?listmap.get(j).get("createrName").toString().trim():null;//创建者
-								resource.setCreaterName(str);
-								str = null;
-								
-								str = listmap.get(j).get("source")!=null && !"".equals(listmap.get(j).get("source"))?listmap.get(j).get("source").toString().trim():null;//渠道
-								resource.setSource(str!=null?new Integer(str):null);
-								str = null;
-								
-								str = listmap.get(j).get("address")!=null && !"".equals(listmap.get(j).get("address"))?listmap.get(j).get("address").toString().trim():null;//地域
-								resource.setAddress(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("resourceName")!=null && !"".equals(listmap.get(j).get("resourceName"))?listmap.get(j).get("resourceName").toString().trim():null;//姓名
-								resource.setResourceName(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("phone")!=null && !"".equals(listmap.get(j).get("phone"))?listmap.get(j).get("phone").toString().trim():null;//手机
-								resource.setPhone(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("courseid")!=null && !"".equals(listmap.get(j).get("courseid"))?listmap.get(j).get("courseid").toString().trim():null;//咨询课程
-								resource.setCourseid(str!=null?new Integer(str):null);
-								str = null;
-								
-								str = listmap.get(j).get("yunYingNote")!=null && !"".equals(listmap.get(j).get("yunYingNote"))?listmap.get(j).get("yunYingNote").toString().trim():null;//运营咨询备注
-								resource.setYunYingNote(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("belongid")!=null && !"".equals(listmap.get(j).get("belongid"))?listmap.get(j).get("belongid").toString().trim():null;//所属人
-								resource.setBelongid(str!=null?new Long(str):null);
-								str = null;
-							}else{
-								str = listmap.get(j).get("resourceName")!=null && !"".equals(listmap.get(j).get("resourceName"))?listmap.get(j).get("resourceName").toString().trim():null;//姓名
-								resource.setResourceName(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("phone")!=null && !"".equals(listmap.get(j).get("phone"))?listmap.get(j).get("phone").toString().trim():null;//手机
-								resource.setPhone(str!=null?str:null);
-								str = null;
-								
-								resource.setUserid(UserContext.getLoginUser().getUserid());
-								str = null;
-								
-								str = listmap.get(j).get("address")!=null && !"".equals(listmap.get(j).get("address"))?listmap.get(j).get("address").toString().trim():null;//地域
-								resource.setAddress(str!=null?str:null);
-								str = null;
-								
-								
-								str = listmap.get(j).get("resourceLevel")!=null && !"".equals(listmap.get(j).get("resourceLevel"))?listmap.get(j).get("resourceLevel").toString().trim():null;//资源等级
-								resource.setResourceLevel(str);
-								str = null;
-							
-								resource.setBelongid(UserContext.getLoginUser().getUserid());
-								str = null;
-								 
-							}
-							
-							listresource.add(resource);
-						}
-					}
-					for (int i = 0; i < listresource.size(); i++) {//写入数据库
-						if (listresource.get(i).getBelongid() != null) {
-							listresource.get(i).setState(StateConstants.state1);
-							listresource.get(i).setAssignTime(new Timestamp(System.currentTimeMillis()));
-						}else{
-							listresource.get(i).setState(StateConstants.state0);
-						}
-						listresource.get(i).setDeptid(deptid);
-						
-						resourceService.saveOrUpdate(listresource.get(i));///////////////
-					}
-					return ReturnConstants.SUCCESS;
-				}
-				return ReturnConstants.EXCEL_NULL;
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-		}
-		return ReturnConstants.PARAM_NULL;
 	}
 	
 	/**
@@ -990,44 +705,6 @@ public class ResourceController extends BaseController{
 	}
 	
 	/**
-	 * 批量转移（销售主管转移资源）
-	 * @param request
-	 * @param resourceIds
-	 * @param roleid
-	 * @return
-	 * @author  
-	 * @date 2020-09-8 下午3:26:42
-	 */
-//	@CacheEvict(value = "baseCache")
-	@RequestMapping(value = "/resource/transferResources.do",method = RequestMethod.POST)
-	public @ResponseBody String transferResources(HttpServletRequest request,String resourceIds,Long roleid,Long belongid){
-		if (resourceIds != null && !"".equals(resourceIds) && roleid != null && belongid != null) {
-			if (roleid.longValue() == 5) {//销售主管角色
-				
-				if (resourceIds != null && !"".equals(resourceIds.trim())) {
-					String[] rIds = resourceIds.split(",");
-					for (int i = 0; i < rIds.length; i++) {
-						List<Resource> resource = resourceService.queryResourceByresourceId(Long.valueOf(rIds[i]));
-						Transferrecord tr = groupTransferRecord(resource.get(0).getResourceLevel(),Long.valueOf(rIds[i]), resource.get(0).getPhone(), resource.get(0).getTel(), resource.get(0).getBelongid(), null, belongid, null, StateConstants.state1, resource.get(0).getSource(), resource.get(0).getDeptid());
-						if (tr != null) {
-							transferrecordService.saveTransferRecord(tr);
-						}
-					}
-				}
-				
-				resourceService.updateResourceBelongid(resourceIds, belongid,StateConstants.state1,new Timestamp(System.currentTimeMillis()));
-				
-				/*****************************消息推送**************************************/
-				sendmessage(WebSocketNeedBean.OBJ_TYPE_LIVE, String.valueOf(belongid),null, resourceIds, null, "销售主管有转移给您的资源，请去【资源管理】查看");
-				return ReturnConstants.SUCCESS;
-			}
-			return ReturnConstants.USER_NO_POWER;//用户无操作权限
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	
-	/**
 	 * 标注或者取消资源星级客户
 	 * @param request
 	 * @param resourceIds
@@ -1036,7 +713,6 @@ public class ResourceController extends BaseController{
 	 * @author  
 	 * @date 2020-9-6 下午12:26:22
 	 */
-//	@CacheEvict(value = "baseCache")
 	@RequestMapping(value = "/resource/resourceColor.do",method = RequestMethod.GET)
 	public @ResponseBody String resourceColor(HttpServletRequest request,String resourceIds,String resourceColor,String resourceLevels){
 		if (resourceIds != null && !"".equals(resourceIds.trim()) && resourceLevels != null && !"".equals(resourceLevels.trim())) {
@@ -1151,27 +827,6 @@ public class ResourceController extends BaseController{
 		return ReturnConstants.USER_NO_LOGIN;//用户未登录，请刷新
 	}
 	
-	/**
-	 * 查询资源转移记录（运营部、销售部）
-	 * @param request
-	 * @param phone
-	 * @param tel
-	 * @param pageSize
-	 * @param currentPage
-	 * @return
-	 * @author  
-	 * @date 2020-9-21 下午1:54:57
-	 */
-	@RequestMapping(value = "/resource/queryTransferRecord.do",method = RequestMethod.GET)
-	public @ResponseBody String queryTransferRecord(HttpServletRequest request,String phone,String tel,Integer pageSize, Integer currentPage){
-		User user = UserContext.getLoginUser();
-		if (user != null) {
-			Long deptid = user.getDeptid();
-			List<Transferrecord> list = transferrecordService.queryTransferrecord(deptid,phone, tel, processPageBean(pageSize, currentPage));
-			return jsonToPage(list);
-		}
-		return ReturnConstants.USER_NO_LOGIN;//用户未登录
-	}
 	
 	/**
 	 * 查询所有运营部人员 + 销售部主管人员
@@ -1186,48 +841,6 @@ public class ResourceController extends BaseController{
 		return jsonToPage(list);
 	}
 	
-	/**
-	 * 转移记录筛选（运营部、销售部）
-	 * @param request
-	 * @param transferrecord
-	 * @param pageSize
-	 * @param currentPage
-	 * @return
-	 * @author  
-	 * @date 2020-9-27 上午11:01:21
-	 */
-	@RequestMapping(value = "/resource/queryTransferRecordBysceen.do",method = RequestMethod.GET)
-	public @ResponseBody String queryTransferRecordBysceen(HttpServletRequest request,Transferrecord transferrecord,Integer pageSize, Integer currentPage){
-		User user = UserContext.getLoginUser();
-		if (user != null) {
-			Long deptid = user.getDeptid();
-			List<Transferrecord> list = transferrecordService.queryTransferRecordBysceen(transferrecord,deptid,null, processPageBean(pageSize, currentPage));
-			return jsonToPage(list);
-		}
-		return ReturnConstants.USER_NO_LOGIN;//用户未登录
-	}
-	
-	/**
-	 * 转移记录筛选导出（运营部、销售部）
-	 * @param request
-	 * @param transferrecord
-	 * @param pageSize
-	 * @param currentPage
-	 * @return
-	 * @author  
-	 * @date 2020-9-27 上午11:01:21
-	 */
-	@RequestMapping(value = "/resource/queryExportTransferRecordBysceen.do",method = RequestMethod.GET)
-	public @ResponseBody String queryExportTransferRecordBysceen(HttpServletRequest request,Transferrecord transferrecord,Integer pageSize, Integer currentPage){
-		User user = UserContext.getLoginUser();
-		if (user != null) {
-			Long deptid = user.getDeptid();
-			List<Transferrecord> list = transferrecordService.queryTransferRecordBysceen(transferrecord,deptid,null,null);
-			return jsonToPage(list);
-		}
-		return ReturnConstants.USER_NO_LOGIN;//用户未登录
-	}
-
 	/**
 	 * 转移记录导出头部
 	 * @return
@@ -1294,7 +907,4 @@ public class ResourceController extends BaseController{
 		}
 		return ReturnConstants.SUCCESS;
 	}
-
-
-
 }
