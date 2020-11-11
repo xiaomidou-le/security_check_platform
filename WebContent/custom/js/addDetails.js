@@ -17,38 +17,8 @@ $('#ch-dealtime').datetimepicker({
 	format:"Y-m-d H:m:s", //格式化日期
 	validateOnBlur:false //删除选中的时间
 });
-/*获取课程*/
-queryCourse('#ch-courseid');
-queryCourse('#courseid');	
-function queryCourse(tagId){
-	$.ajax({
-		type: "GET",
-		url: '../course/queryCourse.do',
-		cache: false,
-		success: function(data) {			
-			var dataObj=eval("("+data+")");//转换为json对象			   
-			var list = dataObj.rows;			
-			$.each(list, function (index, item) {  
-                //循环获取数据					
-	            var courseid = list[index].courseid|| "";  
-	            var courseName = list[index].courseName|| "";
-	            var option = $('<option value="'+courseid+'">' + courseName + '</option>');
-	            $(tagId).append(option);
-            });     
-		}
-	})
-}
 
-/*根据课程ID，查询课程下的科目*/
-$("#courseid").change(function() {
-	var courseid = $('#courseid option:selected').val();
-	if(courseid==""||courseid==null){
-		$('#subjectid').html('');
-	}else{
-		checkRolename("#subjectid",courseid,'../subject/querySubject.do');
-	}
-	
-});
+
 $("#ch-courseid").change(function() {
 	var courseid = $('#ch-courseid option:selected').val();
 	if(courseid==""||courseid==null){

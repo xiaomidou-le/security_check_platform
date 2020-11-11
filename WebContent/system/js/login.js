@@ -110,15 +110,6 @@ function checkPwd(newpwd,oldpwd,repeatpwd,id) {
 	}	
 	return flag;
 }
-//今日目标
-function addToday(){
-	$('#todayNote').css('display','block');
-	$('#todayTip').html("添加今日目标");			
-}
-function chToday(){
-	$('#todayNote').css('display','block');
-	$('#todayTip').html("修改今日目标");
-}
 function saveAdd(){
 	var todayVal = $('#todayVal').val().trim();	
 	var nameid = $('.username').attr('id');					

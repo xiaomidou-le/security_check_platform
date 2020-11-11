@@ -125,25 +125,6 @@
            </div>
         </div>
       </div>
-      <!-- 今日目标 -->
-    <div class="themisWrap" style="display:none;" id="todayNote">
-      <div class="themisGray"></div>
-        <div class="themis" style="top:30%;">
-           <h3 class="themistit"><span class="themisTipPic" style="float: left;padding-top: 17px;padding-left: 10px;margin-right: 10px;"><img class="pic" src="./system/img/tishi.png" height="25" width="25" alt="" /></span><b id="todayTip">友情提示</b></h3>
-           <div class="themispay">
-                <div class="themistip" style="margin-bottom: 20px; color:red; font-size:14px;">
-                	<input type="text" class="form-control" id="todayVal"> 
-                	<p class="help-block" id="todayValError"></p>
-                </div>
-                <div class="form-group">
-					<div class="col-md-offset-4 col-md-6">
-						<a href="javascript:;" class="btn" onclick="saveAdd()">保 存</a>
-						<a href="javascript:;"  class="btn"  style="background: #4c7cba;" onclick="wuorder.CloseDiv('todayNote','fade')">取消</a>
-					</div>
-				</div>
-           </div>
-        </div>
-      </div>
        <!-- 消息弹窗 -->        
        <div id="message">
        		<span class="closemess" onclick="wuorder.CloseDiv('message','fade')">×</span>

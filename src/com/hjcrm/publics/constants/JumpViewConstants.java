@@ -28,17 +28,9 @@ public class JumpViewConstants {
 	
 	public static final String SYSTEM_SUBJECT = "system/subjectMang";//科目管理界面
 	
-	public static final String SYSTEM_PATTERTYPE = "patter/patterType";//课程场景界面
-	
 	public static final String SYSTEM_MESSAGE = "system/messageMang";//消息管理界面
 	
 	public static final String SECURITY_CHECK_MGR = "securityCheck/securityCheckMgr"; //安全校验管理
-	
-	
-	/****************************************************话术管理*************************************************************************/
-	public static final String SYSTEM_PATTER = "patter/myPatter";//我的话术界面
-	
-	
 	
 	/****************************************************运营部*************************************************************************/
 	public static final String RESOURCE_YUNYING = "operate/resourcesMang";//运营部-资源管理界面

@@ -195,25 +195,7 @@ myresource.controller('resourceCtrl',function($scope,$http){
 	    return indexes;  
 	 	
 	};	*/
-	//查询所有课程
-	$http.get("../course/queryCourse.do").success(function(Data){
-    	$scope.course = Data.rows;
-    });	
-	//查询资源管理头部统计信息
-	$http.get("../resource/queryResourceCount.do?deptid="+deptid+"&roleid="+roleid+"&userid="+userid).success(function(Data){
-    	
-		 angular.forEach(Data, function(array){
-				angular.forEach(array.list, function(arr){					
-					$scope.resourceList=arr;//总资源量				
-					
-				});
-				angular.forEach(array.listtoday, function(arr){					
-					$scope.resourceListtoday=arr;//今日资源量				
-					
-				});
-		});
-		
-    });	
+
 	/*查询所有的创建者*/	
 	$http.get("../resource/queryAllCreatePerson.do").success(function(Data){
     	$scope.createPerson = Data.rows;

@@ -29,10 +29,8 @@ import com.hjcrm.publics.util.UserContext;
 import com.hjcrm.resource.entity.Student;
 import com.hjcrm.resource.service.IReportService;
 import com.hjcrm.resource.util.ReportExcelExportUtil;
-import com.hjcrm.system.entity.Course;
 import com.hjcrm.system.entity.Subject;
 import com.hjcrm.system.entity.User;
-import com.hjcrm.system.service.ICourseService;
 import com.hjcrm.system.service.IUserService;
 @Controller
 public class ReportController extends BaseController{
@@ -41,8 +39,6 @@ public class ReportController extends BaseController{
 	private IReportService reportService;
 	@Autowired
 	private IUserService userService;
-	@Autowired
-	private ICourseService courseService;
 
 	/**
 	 * 总表学员管理(财务部)

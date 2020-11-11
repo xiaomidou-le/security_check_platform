@@ -65,11 +65,6 @@ myrole.controller('roleCtrl',function($scope,$http){
 	    return indexes;  
 	 		console.info(indexes);
 	};
-	/*查询所有部门*/
-	$http.get("../dept/queryDept.do").success(function(Data){
-     	$scope.deptname = Data.rows;    	
-    });	
-	
 	
 });
 //增加

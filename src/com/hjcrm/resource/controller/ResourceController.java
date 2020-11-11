@@ -49,9 +49,7 @@ import com.hjcrm.resource.service.ITransferRecordService;
 import com.hjcrm.resource.util.DownLoadExcelUtil;
 import com.hjcrm.resource.util.ExcelExportUtil;
 import com.hjcrm.resource.util.ExcelReaderUtil;
-import com.hjcrm.system.entity.Course;
 import com.hjcrm.system.entity.User;
-import com.hjcrm.system.service.ICourseService;
 import com.hjcrm.system.service.IUserService;
 
 /**
@@ -69,8 +67,6 @@ public class ResourceController extends BaseController{
 	private IStudentService studentService;
 	@Autowired
 	private IUserService userService;
-	@Autowired
-	private ICourseService courseService;
 	@Autowired
 	private ITransferRecordService	transferrecordService;
 	
@@ -161,29 +157,6 @@ public class ResourceController extends BaseController{
 			}
 		}
 		return ReturnConstants.USER_NO_LOGIN;//用户未登录，请刷新
-	}
-	/**
-	 * 跳转资源详细信息页面
-	 * @return
-	 * @author  
-	 * @date 2020-09-14 下午2:55:50
-	 */
-	@RequestMapping(value = "/resource/details.do",method = RequestMethod.GET)
-	public String details(Model model,Long resourceId,Long deptid,Long roleid,Long userid){
-		
-		if (resourceId != null) {
-			List<Resource> list =  resourceService.queryResourceByresourceId(resourceId);//资源信息
-			if (list != null && list.size() > 0) {
-				Course course = courseService.queryCourseById(list.get(0).getCourseid());
-				if (course != null) {
-					list.get(0).setCourseName(course.getCourseName());
-				}
-			}
-			List<Visitrecord> record = resourceService.queryVisitrecordsByresourceId(resourceId,null);//回访记录信息
-			model.addAttribute("resource", list);
-			model.addAttribute("record", record);
-		}
-		return JumpViewConstants.RESOURCE_DETAIL;
 	}
 	
 	/**
@@ -314,50 +287,6 @@ public class ResourceController extends BaseController{
 			}else{
 				return ReturnConstants.lOGINUSER_NO_CREATERUSER;
 			}
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	/**
-	 * 查询资源(运营部、销售部)
-	 * @param request
-	 * @param userid
-	 * @param roleid 角色ID
-	 * @param deptid 部门ID
-	 * @param pageSize
-	 * @param currentPage
-	 * @return
-	 * @author  
-	 * @date 2020-09-2 下午3:55:12
-	 */
-	@RequestMapping(value = "/resource/queryResource.do",method = RequestMethod.GET)
-	public @ResponseBody String queryResource(HttpServletRequest request,String userid,String roleid,String deptid,Integer pageSize, Integer currentPage){
-		if (userid != null && UserContext.getLoginUser() != null && deptid != null) {
-			List<Resource> list = resourceService.queryResource(deptid,userid, roleid, processPageBean(pageSize, currentPage));
-			if (list != null && list.size() > 0) {
-				for (int i = 0; i < list.size(); i++) {
-					if (list.get(i).getBelongid() != null) {
-						User user = userService.queryByIdentity(list.get(i).getBelongid());
-						if (user != null) {
-							list.get(i).setBelongName(user.getUsername());
-						}
-					}
-					if (list.get(i).getCourseid() != null) {
-						Course course = courseService.queryCourseById(list.get(i).getCourseid());
-						if (course != null) {
-							list.get(i).setCourseName(course.getCourseName());
-						}
-					}
-					List<Visitrecord> listvr = resourceService.queryVisitrecordByresourceId(list.get(i).getResourceId(), null);
-					if (listvr != null && listvr.size() > 0) {
-						list.get(i).setVisitRecord(listvr.get(0).getVisitRecord());
-						list.get(i).setVisitCount(listvr.get(0).getVisitCount());
-						list.get(i).setFirstVisitTime(listvr.get(0).getFirstVisitTime());
-						list.get(i).setNearVisitTime(listvr.get(0).getNearVisitTime());
-					}
-				}
-			}
-			return jsonToPage(list);
 		}
 		return ReturnConstants.PARAM_NULL;
 	}

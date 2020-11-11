@@ -89,10 +89,6 @@ myapp.controller('listCtrl',function($scope,$http){
 	 		console.info(indexes);
 	};
 	
-	$http.get("../dept/queryDept.do").success(function(Data){
-     	$scope.deptname = Data.rows;
-    }); 
-	
 });
 
 /*根据部门ID，查询部门下的所有角色*/

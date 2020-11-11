@@ -31,27 +31,6 @@ function saleName(saleId){
 	})
 }
 
-/*获取课程*/
-queryCourse('#course');	
-function queryCourse(tagId){
-	$.ajax({
-		type: "GET",
-		url: '../course/queryCourse.do',
-		cache: false,
-		success: function(data) {			
-			var dataObj=eval("("+data+")");//转换为json对象			   
-			var list = dataObj.rows;			
-			$.each(list, function (index, item) {  
-                //循环获取数据					
-	            var courseid = list[index].courseid|| "";  
-	            var courseName = list[index].courseName|| "";
-	            var option = $('<option value="'+courseid+'">' + courseName + '</option>');
-	            $(tagId).append(option);
-            });     
-		}
-	})
-}
-
 //数据分页
 var userid = document.getElementById("userid").value;//用户Id
 var deptid = document.getElementById("deptid").value;//部门Id
