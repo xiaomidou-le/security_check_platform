@@ -38,34 +38,4 @@ public class TransferRecordServiceImpl implements ITransferRecordService {
 		}
 	}
 
-	/**
-	 * 查询转移记录
-	 */
-	
-	public List<Transferrecord> queryTransferrecord(Long deptid,String phone, String tel,PageBean pageBean) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("phone", phone);
-		param.put("tel", tel);
-		param.put("deptid", deptid);
-		List<Transferrecord> list = transferrecordDao.queryByStatment("queryTransferrecord", param, pageBean);
-		return list;
-	}
-
-	/**
-	 * 转移记录筛选
-	 */
-	
-	public List<Transferrecord> queryTransferRecordBysceen(Transferrecord transferrecord, Long deptid,String transferrecords, PageBean processPageBean) {
-		if (transferrecord != null) {
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("operationId", transferrecord.getOperationId());
-			param.put("createStarttime", transferrecord.getCreateStarttime());
-			param.put("createEndtime", transferrecord.getCreateEndtime());
-			param.put("transferrecords", transferrecords);
-			List<Transferrecord> list = transferrecordDao.queryByStatment("queryTransferRecordBysceen", param, processPageBean);
-			return list;
-		}
-		return null;
-	}
-
 }

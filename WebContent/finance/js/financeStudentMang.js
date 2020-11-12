@@ -41,7 +41,7 @@ var loadData = {
 	deptid:deptid,
 	roleid:roleid
 }
-load(loadData,'../report/queryStudentscaiwu.do',1);
+
 function load(data,url,currentPage){
 	$('#pagination').sjAjaxPager({
 		type: "GET",
@@ -282,49 +282,7 @@ $('#quxiao').on('click', function() {
 });
 //筛选
 var filterData;
-function filter(){
-	$('#pagination').html("");
-	clearDate()
-	var arriveStartTime = $('#arriveStartTime').val()
-	var arriveEndTime = $('#arriveEndTime').val()
-	var remitWay = $('#remitWay').val()
-	var studentName = $('#studentName').val()
-	var idCard = $('#idCard').val()
-	var phone = $('#phone').val()
-	var belongName = $('#belongName option:selected').val()
-	var courseid = $('#course option:selected').val()
-	filterData = {
-		userid: userid,
-    	deptid:deptid,
-    	roleid:roleid,
-		arriveStartTime:arriveStartTime,
-		arriveEndTime:arriveEndTime,
-		remitWay:remitWay,
-		studentName:studentName,
-		idCard:idCard,
-		phone:phone,
-		belongid:belongName,
-		courseid:courseid,
-	}
-	$('#filter').css('display','none');
-	load(filterData,'../report/queryStudentscaiwu.do',1);
-}
-//手机查询
-function phonesearch(){
-	var search = $('#search').val();
-	$('#pagination').html('');
-	var data = {        
-    	userid: userid,
-    	deptid:deptid,
-    	roleid:roleid,	    	
-    	phone:search
-    }
-	if(search=="" || search == null){
-		load(loadData,'../report/queryStudentscaiwu.do');
-	}else {
-		phoneFill (data,'../report/queryStudentscaiwu.do')
-	}
-}
+
 function phoneFill(data,url){
 	$.ajax({
 		url: url,

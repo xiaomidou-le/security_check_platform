@@ -39,10 +39,6 @@
 	<p class="shuiyin"><%=loginName%></p>
 	<p class="shuiyin suiyintwo"><%=loginName%></p>
 	<p class="shuiyin suiyinthree"><%=loginName%></p>
-	<ul class="listnav">
-		<li class="current" id="perlist">业绩列表</li>
-		<li ng-click="performanceDetail('/report/queryPerformanceDetail.do')" id="perdetail">业绩明细</li>
-	</ul>
 	<div class="reportWrap">
 		<div class="list" id="listreport">
 			<div id="findTeacher">
@@ -125,7 +121,6 @@
 			                		<option value="11">会计从业</option>
 			                		<option value="12">初级会计</option>
 			                	</select>
-		                    	<a class="btn filterder" ng-click="course('/report/queryPerformanceCourse.do','tag')">提交</a>  
 			                </span>
 			            </div>
 			            <div class="rankContent">
@@ -155,10 +150,6 @@
 			        <div class="ranking fireRanking">
 			            <div class="ranktitle">
 			                <span><i class="icon fa fa-comments-o"></i>按月份筛选</span>
-			                <span class="indicates" style="width: 201px;">
-			                	<input type="text" id="taskStartTime" class="" ng-model="date" placeholder="选择日期" style="width: 120px;">
-		                    	<a class="btn filterder" ng-click="listtimefilter('/report/queryPerformanceMoth.do')">提交</a>  
-			                </span>
 			            </div>
 			            <div class="rankContent">
 			                <div class="rest">
@@ -199,7 +190,7 @@
 						<input type="text" value="" id="startTime" placeholder="开始时间" name="startTime" class="chioce_time">
 						<span class="until">-</span>
 						<input type="text" value="" id="endTime" placeholder="结束时间" name="endTime" class="chioce_time">
-						<a class="btn filterder" ng-click="performanceDetail('/report/queryPerformanceDetail.do')">提交</a> 
+						
 						<a class="btn filterder" id="filterExport" style="visibility: hidden;">导出</a> 
 					</div>                                                                                                                                                                                                                           
 		    	</div>

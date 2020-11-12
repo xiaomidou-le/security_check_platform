@@ -598,14 +598,6 @@ public class CustomController extends BaseController{
 				list = studentService.queryjijinTotalStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
 			}else if("yincongtotal".equals(menuCode)){//银从
 				list = studentService.queryyincongTotalStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
-			}else if("zhongjitotal".equals(menuCode)){//中级
-				list = studentService.queryzhongjiTotalStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
-			}else if("zhengquantotal".equals(menuCode)){//证券
-				list = studentService.queryzhengquanTotalStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
-			}else if("qihuototal".equals(menuCode)){//期货
-				list = studentService.queryqihuoTotalStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
-			}else if("kuaijitotal".equals(menuCode)){//会计
-				list = studentService.querykuaijiTotalStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
 			}else if("chujitotal".equals(menuCode)){//初级
 				list = studentService.querychujiTotalStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
 			}
@@ -641,12 +633,6 @@ public class CustomController extends BaseController{
 				list = studentService.queryjijinhfStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
 			}else if("yinconghf".equals(menuCode)){//银从
 				list = studentService.queryyinconghfStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
-			}else if("zhongjihf".equals(menuCode)){//中级
-				list = studentService.queryzhongjihfStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
-			}else if("zhengquanhf".equals(menuCode)){//证券
-				list = studentService.queryzhengquanhfStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
-			}else if("qihuohf".equals(menuCode)){//期货
-				list = studentService.queryqihuohfStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
 			}else if("kuaijihf".equals(menuCode)){//会计
 				list = studentService.querykuaijihfStudents(deptid, roleid, userid, processPageBean(pageSize, currentPage));
 			}else if("chujihf".equals(menuCode)){//初级
@@ -725,110 +711,6 @@ public class CustomController extends BaseController{
 		return ReturnConstants.PARAM_NULL;
 	}
 	
-	
-	/**
-	 * 筛选(客服)
-	 * @param request
-	 * @param menuCode
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param student
-	 * @param pageSize
-	 * @param currentPage
-	 * @return
-	 * @author  
-	 * @throws ParseException 
-	 * @date 2020-09-23 下午4:10:31
-	 */
-	@RequestMapping(value = "/custom/queryCustomStudentBySceen.do",method = RequestMethod.GET)
-	public @ResponseBody String queryCustomStudentBySceen(HttpServletRequest request,String menuCode,String mailTim,String deptid,String roleid,String userid,Student student,Integer pageSize,Integer currentPage) throws ParseException{
-		if (student != null && menuCode != null && !"".equals(menuCode.trim())) {
-			List<Student> list = studentService.queryCustomStudentBySceen(menuCode,deptid,roleid,userid,student, processPageBean(pageSize, currentPage));
-			return jsonToPage(list);
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	/**
-	 * 筛选导出(客服)
-	 * @param request
-	 * @param menuCode
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param student
-	 * @param pageSize
-	 * @param currentPage
-	 * @return
-	 * @author  
-	 * @date 2020-09-23 下午4:10:31
-	 */
-	@RequestMapping(value = "/custom/queryExportCustomStudentBySceen.do",method = RequestMethod.GET)
-	public @ResponseBody String queryExportCustomStudentBySceen(HttpServletRequest request,String menuCode,String deptid,String roleid,String userid,Student student,Integer pageSize,Integer currentPage){
-		if (student != null && menuCode != null && !"".equals(menuCode.trim())) {
-			List<Student> list = studentService.queryCustomStudentBySceen(menuCode,deptid,roleid,userid,student, null);
-			return jsonToPage(list);
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	/**
-	 * 获取导出头部信息
-	 * @return
-	 * @author  
-	 * @date 2020-09-7 上午9:55:24
-	 * AFPtotal CFPtotal jijintotal yincongtotal zhongjitotal zhengquantotal qihuototal kuaijitotal chujitotal passtotal teshutotal
-	 * AFPhf CFPhf jijinhf yinconghf zhongjihf zhengquanhf qihuohf kuaijihf chujihf
-	 */
-	public static String[] getHeaders(Long deptid,String menuCode){
-		String[] header = null;
-		if (deptid != null && (deptid.longValue() == StateConstants.DEPT_KEFU.longValue() || deptid.longValue() == StateConstants.DEPT_AFPZLH.longValue()
-				|| deptid.longValue() == StateConstants.DEPT_AFPXC.longValue()) && "AFPtotal".equals(menuCode)) {//客服部-AFP总表学员-导出表头
-			header = new String[]{"姓名","身份证号","手机","固定电话","邮箱","单位","单位地址","职务","毕业院校","学历","招生老师","收款金额","到账日期","汇款方式","理财网用户名","理财网密码","课件","发票情况","报考密码","考试日期","通过情况","协议","班次","备注"} ;
-		}else if(deptid != null && (deptid.longValue() == StateConstants.DEPT_KEFU.longValue() || deptid.longValue() == StateConstants.DEPT_AFPZLH.longValue()
-				|| deptid.longValue() == StateConstants.DEPT_AFPXC.longValue()) && "AFPhf".equals(menuCode)){//客服部-AFP回访-导出表头
-			header = new String[]{"班次","姓名","身份证号","手机","固定电话","邮箱","单位","报考密码","考试日期","通过情况","招生老师","理财网过期时间","协议","微信","到账日期","上课班号","课件版本","邮寄时间","备注"} ;
-		}else if(deptid != null && (deptid.longValue() == StateConstants.DEPT_KEFU.longValue() || deptid.longValue() == StateConstants.DEPT_CFPWYL.longValue()) && "CFPtotal".equals(menuCode)){//客服部-CFP总表学员-导出表头
-			header = new String[]{"班主任","姓名","身份证","手机","固定电话","邮箱","单位","地址","职务","科目","投资","税务","福利","保险","综合","收款金额","收款日期","汇款方式","LCW用户名","LCW密码","招生老师","是否全科通过","报考密码","班级","分配时间","是否协助结业"} ;
-		}else if(deptid != null && (deptid.longValue() == StateConstants.DEPT_KEFU.longValue() || deptid.longValue() == StateConstants.DEPT_CFPWYL.longValue())  && "CFPhf".equals(menuCode)){//客服部-CFP回访-导出表头
-			header = new String[]{"班级","姓名","身份证","手机","固定电话","邮箱","单位","招生老师","报名密码","所报科目","投资","考试日期","税务","考试日期","福利","考试日期","保险","考试日期","综合","考试日期","收款金额","收款日期","课件版本","邮寄时间","理财网过期时间","微信"} ;
-		}else if(deptid != null && (deptid.longValue() == StateConstants.DEPT_KEFU.longValue() || deptid.longValue() == StateConstants.DEPT_AFPZLH.longValue() 
-						|| deptid.longValue() == StateConstants.DEPT_AFPXC.longValue() || deptid.longValue() == StateConstants.DEPT_CFPWYL.longValue() ||
-						deptid.longValue() == StateConstants.DEPT_FACLWH.longValue()) && ("jijintotal".equals(menuCode) || "yincongtotal".equals(menuCode)
-								|| "zhongjitotal".equals(menuCode)|| "zhengquantotal".equals(menuCode)|| "qihuototal".equals(menuCode)
-								|| "kuaijitotal".equals(menuCode)|| "chujitotal".equals(menuCode))){//客服部-基金总表学员-导出表头
-			header = new String[]{"班主任","资源分配时间","姓名","身份证","手机号","固定电话","邮箱","单位","地址","职务","毕业院校","学历","民族","招生老师","收款金额","收款日期","汇款方式","科目"} ;
-			
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_FACLWH.longValue() && "jijinhf".equals(menuCode)){//客服部-基金回访-导出表头
-			header = new String[]{"地区","姓名","身份证","手机号","所报科目","基金1","考试成绩","基金2","考试成绩"} ;
-			
-		} else if(deptid != null && deptid.longValue() == StateConstants.DEPT_FACLWH.longValue() && "yinconghf".equals(menuCode)){//客服部-银从回访-导出表头
-			header = new String[]{"地区","姓名","身份证","手机号","所报科目","法律法规与综合能力","考试成绩","个人理财","考试成绩","风险管理","考试成绩","公司信贷","考试成绩","个人贷款","考试成绩"} ;
-			
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_FACLWH.longValue() && "zhongjihf".equals(menuCode)){//客服部-中级回访-导出表头
-			header = new String[]{"地区","姓名","身份证","手机号","所报科目","经济基础知识","考试成绩","金融专业知识与实务","考试成绩","工商管理专业知识与实务","考试成绩","财政税收专业知识与实务","考试成绩"} ;
-			
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_FACLWH.longValue() && "zhengquanhf".equals(menuCode)){//客服部-证券回访-导出表头
-			header = new String[]{"地区","姓名","身份证","手机号","所报科目","证券市场基本法律法规","考试成绩","金融市场基础知识","考试成绩"} ;
-			
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_FACLWH.longValue() && "qihuohf".equals(menuCode)){//客服部-期货回访-导出表头
-			header = new String[]{"地区","姓名","身份证","手机号","所报科目","期货法律法规","考试成绩","期货基础知识","考试成绩"} ;
-			
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_FACLWH.longValue() && "kuaijihf".equals(menuCode)){//客服部-会计从业回访-导出表头
-			header = new String[]{"班主任","地区","姓名","身份证","手机号","邮箱","招生老师","报考密码","是否微信","课件打印","收款金额","收款日期","考试日期","所报科目","财经法规与会计职业道德","考试成绩","会计基础","考试成绩"} ;
-			
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_FACLWH.longValue() && "chujihf".equals(menuCode)){//客服部-初级会计回访-导出表头
-			header = new String[]{"地区","姓名","身份证","手机号","所报科目","初级会计实务","考试成绩","经济法基础","考试成绩"} ;
-			
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_KEFU.longValue() && "passtotal".equals(menuCode)){//客服部-通过学员-导出表头
-			header = new String[]{"",""} ;
-		}else if(deptid != null && deptid.longValue() == StateConstants.DEPT_KEFU.longValue() && "teshutotal".equals(menuCode)){//客服部-特殊情况学员-导出表头
-			header = new String[]{"",""} ;
-		}
-		return header;
-	}
-	
 	public static String getTitle(Long deptid,String menuCode){
 		String title = "";
 		if (deptid != null &&  (deptid.longValue() == StateConstants.DEPT_AFPZLH.longValue() || deptid.longValue() == StateConstants.DEPT_AFPXC.longValue()) && "AFPtotal".equals(menuCode)) {//客服部-AFP总表学员-导出标题
@@ -873,74 +755,6 @@ public class CustomController extends BaseController{
 			title = "特殊情况学员.xls";
 		}
 		return title;
-	}
-	
-	/**
-	 * 客服导出
-	 * @param request
-	 * @param response
-	 * @param student
-	 * @param studentIds
-	 * @param deptid
-	 * @return
-	 * @author  
-	 * @date 2020-09-22 下午4:38:48
-	 */
-	@RequestMapping(value = "/custom/StudentExport.do",method = RequestMethod.POST)
-	public @ResponseBody String StudentExport(HttpServletRequest request, HttpServletResponse response,Student student,String studentIds,Long deptid,String menuCode){
-		if (deptid != null && menuCode != null && !"".equals(menuCode)) {
-			 String[] header = getHeaders(deptid,menuCode);
-			 //获取导出数据
-			 User user = UserContext.getLoginUser();
-			 List<Student> liststudent = null;
-			 if (studentIds != null && !"".equals(studentIds.trim())) {
-					liststudent = studentService.queryStudents(null, studentIds,null, null, null, null);
-				}else{
-					 liststudent =  studentService.queryCustomStudentBySceen(menuCode, String.valueOf(deptid), String.valueOf(user.getRoleid()), String.valueOf(user.getUserid()), student, null);
-				}
-			if (liststudent != null && liststudent.size() > 0) {
-				//写入到excel
-				String separator = File.separator;
-				String dir = request.getRealPath(separator + "upload");
-				try {
-					OutputStream out = new FileOutputStream(dir + separator + getTitle(deptid, menuCode));
-					PublicExcelExportUtil.exportExcelStudent(menuCode,getTitle(deptid, menuCode).substring(0, getTitle(deptid, menuCode).indexOf(".")), header, liststudent, out);
-					// 下载到本地
-					out.close();
-					String path = request.getSession().getServletContext().getRealPath(separator + "upload" + separator + getTitle(deptid, menuCode));
-					response.setContentType("text/html;charset=utf-8");
-					request.setCharacterEncoding("UTF-8");
-					java.io.BufferedInputStream bis = null;
-					java.io.BufferedOutputStream bos = null;
-					String downLoadPath = path;
-					try {
-						long fileLength = new File(downLoadPath).length();
-						response.setContentType("application/x-msdownload;");
-						response.setHeader("Content-disposition","attachment; filename=" + new String(getTitle(deptid, menuCode).getBytes("utf-8"),"ISO8859-1"));
-						response.setHeader("Content-Length", String.valueOf(fileLength));
-						bis = new BufferedInputStream(new FileInputStream(downLoadPath));
-						bos = new BufferedOutputStream(response.getOutputStream());
-						byte[] buff = new byte[2048];
-						int bytesRead;
-						while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
-							bos.write(buff, 0, bytesRead);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					} finally {
-						if (bis != null)
-							bis.close();
-						if (bos != null)
-							bos.close();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return ReturnConstants.SUCCESS;
-			}
-			return ReturnConstants.PARAM_NULL;
-		}
-		return ReturnConstants.PARAM_NULL;
 	}
 	
 	/**

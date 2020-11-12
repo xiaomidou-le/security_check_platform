@@ -136,16 +136,7 @@ public interface IResourceService {
 	 * @date 2020-09-4 下午5:20:10
 	 */
 	public List<Resource> queryResourceByresourceId(Long resourceId);
-	
-	/**
-	 * 根据资源ID查询资源的回访记录
-	 * @param resourceId
-	 * @return
-	 * @author  
-	 * @date 2020-09-4 下午5:20:10
-	 */
-	public List<Visitrecord> queryResourceVisitrecord(Long resourceId,Long deptid,Long roleid,Long userid);
-	
+
 	/**
 	 * 根据条件进行查询资源--筛选
 	 * @param resource
@@ -234,19 +225,6 @@ public interface IResourceService {
 	 * @date 2020-9-15 15:04:17
 	 */
 	public List<User> queryXiaoShouByRoleid(String deptid);
-	
-	/**
-	 * 今日需要回访的资源
-	 * @param deptid
-	 * @param userid
-	 * @param roleid
-	 * @param processPageBean
-	 * @return
-	 * @author  
-	 * @date 2020-9-26 上午11:51:44
-	 */
-	public List<Resource> queryTodayVirecordResources(String deptid, String userid,String roleid, String nowtime,String nexttime,PageBean processPageBean);
-
 
 	public void updateVisitrecordByresourceId(Long visitRecordid, Long belongid);
 

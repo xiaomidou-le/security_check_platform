@@ -772,39 +772,6 @@ public class ResourceController extends BaseController{
 		return ReturnConstants.USER_NO_LOGIN;//用户未登录，请刷新
 	}
 	
-	
-	/**
-	 * 今日需要回访的资源
-	 * @param request
-	 * @param userid
-	 * @param roleid
-	 * @param deptid
-	 * @param pageSize
-	 * @param currentPage
-	 * @return
-	 * @throws ParseException
-	 * @author  
-	 * @date 2020-9-26 下午2:16:10
-	 */
-	@RequestMapping(value = "/resource/nextVisitMessage.do",method = RequestMethod.GET)
-	public @ResponseBody String nextVisitMessage(HttpServletRequest request,String userid,String roleid,String deptid,Integer pageSize,Integer currentPage) throws ParseException{
-		Timestamp time = new Timestamp(System.currentTimeMillis());
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String nowtim = sf.format(time).toString();//当前时间
-	    SimpleDateFormat nextsf = new SimpleDateFormat("yyyy-MM-dd");
-	    Calendar cal0 = Calendar.getInstance();  
-        cal0.setTime(nextsf.parse(nowtim));  
-        cal0.add(Calendar.DAY_OF_YEAR, 0);
-        Calendar cal = Calendar.getInstance();  
-        cal.setTime(nextsf.parse(nowtim));  
-        cal.add(Calendar.DAY_OF_YEAR, +1);  
-        String nexttime = sf.format(cal.getTime()); 
-        String nowtime = sf.format(cal0.getTime());  
-		List<Resource> list = resourceService.queryTodayVirecordResources(deptid,userid,roleid,nowtime,nexttime,processPageBean(pageSize, currentPage));
-		return jsonToPage(list);
-	}
-	
-	
 	/**
 	 * 跳转转移记录界面--销售部
 	 * @param model
@@ -850,61 +817,5 @@ public class ResourceController extends BaseController{
 	public static String[] gettfHeaders(){
 		String[] header = {"转移时间","操作人","手机","座机","转移前归属者","转移后归属者","销售界面资源状态","转移前资源等级","转移后资源等级"} ;
 		return header ;
-	}
-	
-	/**
-	 * 转移记录导出
-	 * @param request
-	 * @param response
-	 * @param transferrecord
-	 * @param transferrecordIds
-	 * @param deptid
-	 * @return
-	 * @author  
-	 * @date 2020-9-27 下午2:22:55
-	 */
-	@RequestMapping(value = "/resource/exceltransferrecordExport.do",method = RequestMethod.POST)
-	public @ResponseBody String exceltransferrecordExport(HttpServletRequest request,HttpServletResponse response,Transferrecord transferrecord,String transferrecordIds,Long deptid){
-		String[] header = gettfHeaders();//获取头部标题
-		//获取要导出的数据
-		List<Transferrecord> list = transferrecordService.queryTransferRecordBysceen(transferrecord,deptid,transferrecordIds, null);
-		//写入到excel
-		String separator = File.separator;
-		String dir = request.getRealPath(separator + "upload");
-		try {
-			OutputStream out = new FileOutputStream(dir + separator + "资源转移信息.xls");
-			ExcelExportUtil.exceltransferrecordExport("资源转移信息", header, list, out);
-			//下载到本地
-			out.close();
-			String path = request.getSession().getServletContext().getRealPath(separator + "upload" + separator + "资源转移信息.xls");
-			response.setContentType("text/html;charset=utf-8");
-			request.setCharacterEncoding("UTF-8");
-			java.io.BufferedInputStream bis = null;
-			java.io.BufferedOutputStream bos = null;
-			String downLoadPath = path;
-			try {
-				long fileLength = new File(downLoadPath).length();
-				response.setContentType("application/x-msdownload;");
-				response.setHeader("Content-disposition","attachment; filename=" + new String("资源转移信息.xls".getBytes("utf-8"), "ISO8859-1"));
-				response.setHeader("Content-Length", String.valueOf(fileLength));
-				bis = new BufferedInputStream(new FileInputStream(downLoadPath));
-				bos = new BufferedOutputStream(response.getOutputStream());
-				byte[] buff = new byte[2048];
-				int bytesRead;
-				while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
-					bos.write(buff, 0, bytesRead);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (bis != null)
-					bis.close();
-				if (bos != null)
-					bos.close();
-			}			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ReturnConstants.SUCCESS;
 	}
 }

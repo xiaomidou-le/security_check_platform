@@ -201,7 +201,6 @@
 	                <span><i class="icon fa fa-comments-o"></i>按时间筛选</span>
 	                <span class="indicates" style="width: 177px;">
 	                	<input type="text" id="taskStartTime" class="" ng-model="date" placeholder="选择日期">
-                    	<a class="btn filterder" ng-click="listtimefilter('/report/queryUserAddCountTime.do')">提交</a>  
                     	<a class="btn filterder export" id="filterExport">导出</a>        
 	                </span>
 	            </div>
@@ -251,10 +250,6 @@
 	var deptid = document.getElementById("deptid").value;
     var myresource = angular.module('resource', []);
 	myresource.controller('resourceCtrl',function($scope,$http){
-    forPages('/report/queryUserAddCountAll.do',userid,deptid,function(){});
-   	moth('/report/queryUserAddCountMoth.do',userid,deptid,function(){});
-    today('/report/queryUserAddCountToday.do',userid,deptid,function(){});
-    week ('/report/queryUserAddCountWeek.do',userid,deptid,function(){})
     //获取数据
     function forPages (url,userid,deptid,callback){
        $http.get(url+"?deptid="+deptid+"&userid="+userid).success(function(Data){

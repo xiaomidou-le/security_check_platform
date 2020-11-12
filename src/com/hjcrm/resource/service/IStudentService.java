@@ -228,20 +228,6 @@ public interface IStudentService {
 	public List<User> queryxzCustoms();
 	
 	/**
-	 * 客服部专用筛选功能接口
-	 * @param menuCode
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param student
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-09-23 下午4:24:09
-	 */
-	public List<Student> queryCustomStudentBySceen(String menuCode,String deptid,String roleid,String userid,Student student,PageBean pageBean);
-	
-	/**
 	 * 查询AFP总表学员(客服)
 	 * @param deptid
 	 * @param roleid
@@ -336,78 +322,6 @@ public interface IStudentService {
 	 * @date 2020-09-24 上午9:38:23
 	 */
 	public List<Student> queryyinconghfStudents(String deptid,String roleid,String userid,PageBean pageBean);
-	
-	/**
-	 * 查询中级总表学员(客服)
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-09-24 上午9:38:23
-	 */
-	public List<Student> queryzhongjiTotalStudents(String deptid,String roleid,String userid,PageBean pageBean);
-	
-	/**
-	 * 查询中级回访学员(客服)
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-09-24 上午9:38:23
-	 */
-	public List<Student> queryzhongjihfStudents(String deptid,String roleid,String userid,PageBean pageBean);
-	
-	/**
-	 * 查询证券总表学员(客服)
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-09-24 上午9:38:23
-	 */
-	public List<Student> queryzhengquanTotalStudents(String deptid,String roleid,String userid,PageBean pageBean);
-	
-	/**
-	 * 查询证券回访学员(客服)
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-09-24 上午9:38:23
-	 */
-	public List<Student> queryzhengquanhfStudents(String deptid,String roleid,String userid,PageBean pageBean);
-	
-	/**
-	 * 查询期货总表学员(客服)
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-09-24 上午9:38:23
-	 */
-	public List<Student> queryqihuoTotalStudents(String deptid,String roleid,String userid,PageBean pageBean);
-	
-	/**
-	 * 查询期货回访学员(客服)
-	 * @param deptid
-	 * @param roleid
-	 * @param userid
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-09-24 上午9:38:23
-	 */
-	public List<Student> queryqihuohfStudents(String deptid,String roleid,String userid,PageBean pageBean);
 	
 	/**
 	 * 查询会计总表学员(客服)

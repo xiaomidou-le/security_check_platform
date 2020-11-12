@@ -28,12 +28,8 @@ public class BackgroundLoginInterceptor implements HandlerInterceptor {
 			if("/login.do".equals(servletPath)){
 				return true;
 			}else if ("/system/test.do".equals(servletPath) || "/queryUserById.do".equals(servletPath) || "/forget/indexEmail.do".equals(servletPath) || "/forget/sendEmail.do".equals(servletPath) 
-					|| "/forget/resetLink.do".equals(servletPath) || "/forget/resetPassword.do".equals(servletPath) 
-					|| "/report/queryPerformanceAll.do".equals(servletPath)|| "/report/queryPerformanceTodayMoth.do".equals(servletPath)
-					|| "/report/queryPerformanceCourse.do".equals(servletPath) || "/report/queryPerformanceMoth.do".equals(servletPath)
-					|| "/report/queryPerformanceTodayWeek.do".equals(servletPath) || "/report/queryPerformanceYestoday.do".equals(servletPath) 
-					|| "/report/queryPerformanceAllnotAC.do".equals(servletPath)|| "/report/queryPerformanceTodayMothnotAC.do".equals(servletPath)
-					|| "/report/queryPerformanceTodayWeeknotAC.do".equals(servletPath) || "/report/queryPerformanceYestodaynotAC.do".equals(servletPath) ){
+					|| "/forget/resetLink.do".equals(servletPath) 
+					|| "/forget/resetPassword.do".equals(servletPath) ){
 				return true;
 			}else{
 				response.sendRedirect(request.getContextPath()+"/login.do");

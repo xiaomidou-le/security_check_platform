@@ -35,15 +35,6 @@ var myresource = angular.module('resource', []);
 
 myresource.controller('resourceCtrl',function($scope,$http){
    //初始化第一页
-   forPages('../report/queryPerformanceAll.do',userid,deptid,roleid,function(){});
-   moth('../report/queryPerformanceTodayMoth.do',userid,deptid,roleid,function(){});
-   week('../report/queryPerformanceTodayWeek.do',userid,deptid,roleid,function(){});
-   yestoday('../report/queryPerformanceYestoday.do',userid,deptid,roleid,function(){});
-   
-   forPagesnotAC('../report/queryPerformanceAllnotAC.do',userid,deptid,roleid,function(){});
-   mothnotAC('../report/queryPerformanceTodayMothnotAC.do',userid,deptid,roleid,function(){});
-   weeknotAC('../report/queryPerformanceTodayWeeknotAC.do',userid,deptid,roleid,function(){});
-   yestodaynotAC('../report/queryPerformanceYestodaynotAC.do',userid,deptid,roleid,function(){});
    //获取数据
    function forPages (url,userid,deptid,roleid,callback){
       $http.get(url+"?deptid="+deptid+"&userid="+userid+"&roleid="+roleid).success(function(Data){

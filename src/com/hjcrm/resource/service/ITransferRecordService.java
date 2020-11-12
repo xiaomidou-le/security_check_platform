@@ -20,27 +20,5 @@ public interface ITransferRecordService {
 	 * @date 2020-9-21 下午1:56:27
 	 */
 	public void saveTransferRecord(Transferrecord transferrecord);
-	
-	/**
-	 * 查询转移记录
-	 * @param phone
-	 * @param tel
-	 * @param pageBean
-	 * @return
-	 * @author  
-	 * @date 2020-9-21 下午1:57:14
-	 */
-	public List<Transferrecord> queryTransferrecord(Long deptid,String phone,String tel,PageBean pageBean);
-
-	/**
-	 * 转移记录筛选
-	 * @param transferrecord
-	 * @param deptid
-	 * @param processPageBean
-	 * @return
-	 * @author  
-	 * @date 2020-9-27 上午11:01:35
-	 */
-	public List<Transferrecord> queryTransferRecordBysceen(Transferrecord transferrecord, Long deptid, String transferrecords,PageBean processPageBean);
 
 }

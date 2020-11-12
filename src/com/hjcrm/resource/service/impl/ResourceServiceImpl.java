@@ -294,22 +294,6 @@ public class ResourceServiceImpl implements IResourceService{
 			resourceDao.queryByStatment("updateVisitrecordByresourceId", param, null);
 		}
 	}
-	/**
-	 * 根据资源ID查询资源的回访记录
-	 */
-	
-	public List<Visitrecord> queryResourceVisitrecord(Long resourceId,Long deptid,Long roleid,Long userid) {
-		if (resourceId != null) {
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("resourceId", resourceId);
-			param.put("deptid", deptid);
-			param.put("roleid", roleid);
-			param.put("userid", userid);
-			List<Visitrecord> list  = visitrecordDao.queryByStatment("queryResourceVisitrecord", param, null);
-			return list;
-		}
-		return null;
-	}
 
 	/**
 	 * 增加资源的回访记录
@@ -465,25 +449,4 @@ public class ResourceServiceImpl implements IResourceService{
 		}
 		return null;
 	}
-	
-	/**
-	 * 查询符合条件的数据
-	 */
-	
-	public List<Resource> queryTodayVirecordResources(String deptid, String userid,String roleid, String nowtime,String nexttime,PageBean processPageBean) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("nowtime", nowtime);
-		param.put("nexttime", nexttime);
-		param.put("deptid", deptid);
-		param.put("userid", userid);
-		param.put("roleid", roleid);
-		List<Resource> list = resourceDao.queryByStatment("queryTodayVirecordResources", param, null);
-		return list;
-		
-	}
-	
-
-
-
-
 }

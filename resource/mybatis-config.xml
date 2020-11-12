@@ -13,7 +13,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		</plugin>
 	</plugins>
 	
-
 	<mappers>
 		<mapper resource="commonsqlmappings/CommonMapper.xml" />
 		<mapper resource="mybatis/UserMapper.xml"/>
@@ -24,7 +23,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="mybatis/ResourceMapper.xml" />
 		<mapper resource="mybatis/StudentMapper.xml" />
 		<mapper resource="mybatis/CustomMapper.xml" />
-		<mapper resource="mybatis/ReportMapper.xml" />
 		<mapper resource="mybatis/SystemMessageMapper.xml" />
 		<mapper resource="mybatis/CellinfoMapper.xml" />
 		<mapper resource="mybatis/TaskMapper.xml" />
