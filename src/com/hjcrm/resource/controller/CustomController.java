@@ -28,7 +28,6 @@ import com.hjcrm.publics.util.BaseController;
 import com.hjcrm.publics.util.UserContext;
 import com.hjcrm.resource.entity.Dealrecord;
 import com.hjcrm.resource.entity.Student;
-import com.hjcrm.resource.service.IResourceService;
 import com.hjcrm.resource.service.IStudentService;
 import com.hjcrm.resource.util.PublicExcelExportUtil;
 import com.hjcrm.system.entity.Menu;
@@ -46,8 +45,7 @@ public class CustomController extends BaseController{
 	
 	@Autowired
 	private IStudentService studentService;
-	@Autowired
-	private IResourceService resourceService;
+
 	@Autowired
 	private IMenuService menuService;
 	@Autowired
@@ -757,58 +755,7 @@ public class CustomController extends BaseController{
 		return title;
 	}
 	
-	/**
-	 * 客服回访表，修改成交记录
-	 * @param request
-	 * @param userid
-	 * @param dealrecord
-	 * @param subjects
-	 * @param studentId
-	 * @param student
-	 * @return
-	 * @author  
-	 * @date 2020-09-29 下午2:29:24
-	 */
-	@RequestMapping(value="/custom/editDealrecord.do",method = RequestMethod.POST)
-	public @ResponseBody String editDealrecord(HttpServletRequest request,String userid,Dealrecord dealrecord,String subjects,String studentId,Student student){
-		if (studentId != null && !"".equals(studentId.trim()) && dealrecord != null && dealrecord.getDealrecordId() != null) {
-			List<Student> list = studentService.queryhfStudents(null, studentId, null, null, null);
-			if (list != null && list.size() > 0) {
-				Integer studentstate = list.get(0).getStudentstate();
-				if (studentstate == StateConstants.studentstate5 || studentstate == StateConstants.studentstate6) {//5已转入
-					//2：学员的成交记录
-					if (list.get(0).getResourceId() != null ) {
-						dealrecord.setStudentId(null);
-					}
-					resourceService.saveOrUpdate(dealrecord);
-					
-					List<Student> listAfter = studentService.queryhfStudents(null, studentId, null, null, null);
-					List<Dealrecord> listDealrecord = listAfter.get(0).getDealrecord();
-					int numpass = 0;
-					if (listDealrecord != null && listDealrecord.size() > 0) {
-						for (int i = 0; i < listDealrecord.size(); i++) {
-							Integer ispass = listDealrecord.get(i).getIspass();
-							if (ispass != null && ispass == 1) {
-								numpass++;
-							}
-						}
-						if (numpass == listDealrecord.size()) {
-							list.get(0).setIspass(1);
-							list.get(0).setStudentstate(StateConstants.studentstate6);
-							studentService.saveOrUpdate(list.get(0));
-						}else{
-							list.get(0).setIspass(0);
-							list.get(0).setStudentstate(StateConstants.studentstate5);
-							studentService.saveOrUpdate(list.get(0));
-						}
-					}
-					return ReturnConstants.SUCCESS;//已成功修改成交记录
-				}
-				return ReturnConstants.USER_NO_POWER;//非已转入状态的学员，不能修改成交记录
-			}
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
+
 	
 	/**
 	 * 特殊情况学员

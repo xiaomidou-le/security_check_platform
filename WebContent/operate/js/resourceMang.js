@@ -228,11 +228,6 @@ function clearDate(){
 	$("#resourceTable").html("");
 } 
 
-//查重
-function checkRepeat(){
-	$('#pagination').html("");
-	load(firstload,'../resource/queryRepeatResource.do',1)
-}
 /*根据条件进行查询资源--筛选*/	
 $('#filterDerter').on('click',function(){
 	filter();

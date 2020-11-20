@@ -25,10 +25,9 @@
 	<select id="queryByIdentity" parameterType="java.lang.Long" resultType="com.hjcrm.system.entity.User">
 		select 
 			u.userid,u.username,u.nickname,u.password,u.email,u.userphoto,u.phone,
-	        u.mobile,u.deptid,u.roleid,u.state,u.sex,u.dr,u.create_time,u.create_time,
-	        u.update_id,u.update_time,u.note, d.deptname,r.rolename
+	        u.mobile,u.roleid,u.state,u.sex,u.dr,u.create_time,u.create_time,
+	        u.update_id,u.update_time,u.note, r.rolename
 		from hj_user u 
-		  left join hj_dept d on d.deptid = u.deptid
           left join hj_role r on r.roleid = u.roleid
 		where  1=1 and u.dr = 0 and u.state = 0 and u.userid = #{paramter} 
 	</select>
@@ -63,19 +62,17 @@
 	<!-- 查询所有运营部人员 和销售部主管人员 -->
 	<select id="queryAllDirectors" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.User">
 		select 
-			u.userid,u.username,u.deptid,u.roleid
+			u.userid,u.username,u.roleid
 		from hj_user u
 		where 1=1 and u.dr = 0
-		and (u.deptid = 2 or u.roleid in (4,6,8,10,12,14,16,18))
 	</select>
 	
 	<!-- 查询所有销售,行政,客服-->
 	<select id="queryAllusers" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.User">
 		select 
-			u.userid,u.username,u.deptid,u.roleid
+			u.userid,u.username,u.roleid
 		from hj_user u
 		where 1=1 and u.dr = 0  and u.state = 0
-		and (u.deptid > 3)
 	</select>
 	
 	<select id="queryUserByUsername" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.User">

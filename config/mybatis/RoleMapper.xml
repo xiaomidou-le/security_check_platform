@@ -4,15 +4,12 @@
 
 <mapper namespace="com.hjcrm.entity">
 
-	<!-- 根据部门ID，查询部门下的所有角色 -->
-	<select id="queryRoleByDeptid" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.Role">
+	<!-- 根据部门ID，查询系统中所有角色 -->
+	<select id="queryRoleList" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.Role">
 		select 
-			r.roleid,r.rolename,r.deptid,r.dr
+			r.roleid,r.rolename,r.dr
 		from hj_role r
-		where 1=1 and r.dr = 0
-		<if test="deptid != null">
-			and r.deptid = #{deptid}
-		</if>
+		where r.dr = 0
 	</select>
 	
 	<!-- 修改角色对应的菜单，删除对应关系 -->
@@ -22,7 +19,7 @@
 	
 	<!-- 根据部门ID，查询部门下的所有角色 -->
 	<select id="queryAllRole" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.Role">
-		select  r.roleid,r.rolename,r.deptid,r.dr, (select d.deptname from hj_dept d where 1=1 and d.dr = 0  and d.deptid = r.deptid) deptname, (select group_concat(m.menuname separator ',' ) menuname from hj_menu m ,hj_role_menu rm  where 1=1 and m.dr = 0 and rm.dr = 0 and rm.roleid = r.roleid  and  rm.menuid = m.menuid ) menuname   from hj_role r where 1=1 and r.dr = 0  
+		select r.roleid,r.rolename,r.dr from hj_role r where r.dr = 0  
 	</select>
 	
 	

@@ -88,13 +88,14 @@ myapp.controller('listCtrl',function($scope,$http){
 	    return indexes;  
 	 		console.info(indexes);
 	};
-	
+	getRoleList("#roleid");
 });
 
 /*根据部门ID，查询部门下的所有角色*/
 $("#deptid").change(function() {
 	var checkDeptname = $('#deptid option:selected').val();
 	checkRolename("#roleid",checkDeptname);
+	getRoleList("#roleid");
 });
 
 $("#ch-deptid").change(function() {
@@ -124,6 +125,29 @@ function checkRolename(ele,deptid) {
 		   }
 	});
 }
+//查询所有的角色
+function getRoleList(ele) {
+    var clearname = $(ele);
+    clearname.html(''); //清空原有的选项    
+    $.ajax({        			
+		   type: 'GET',
+/*		   data: {
+			 deptid:deptid
+		   },*/
+		   url: "../role/queryRoleList.do",		   
+		   success: function(data) {			   
+			   var dataObj=eval("("+data+")");//转换为json对象
+			   var list = dataObj.rows;			   
+		        $.each(list, function(index, array) {
+		        	//循环获取数据
+	                var roleid = array.roleid|| "";	
+	                var rolename = array.rolename || "";
+		        	var option = '<option value="'+roleid+'">' + rolename + '</option>';
+		        	clearname.append(option);
+			    });
+		   }
+	});
+}
 
 //增加
 function addUser(){
@@ -138,8 +162,7 @@ function addUser(){
 	 var userphoto = $('#userphoto').val();
 	 var note = $('#note').val();
 	 var deptgroup = $('#deptgroup option:selected').val();
-	 	//var flag=true;
-		var regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+		var regEmail =/^([a-zA-Z0-9_\-\.])+\@([a-zA-Z0-9_\-\.])+\.([a-zA-Z0-9_-]+)+$/;	
 		var regPhone = /^1[3|4|5|8|7]\d{9}$/;
 		if (username =="" || username== null) {		
 			$('#usernameError').html('用户名不能为空！')

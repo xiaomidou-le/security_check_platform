@@ -32,14 +32,10 @@ import com.hjcrm.publics.util.BaseController;
 import com.hjcrm.publics.util.JackSonUtils;
 import com.hjcrm.publics.util.UserContext;
 import com.hjcrm.publics.websocket.entity.WebSocketNeedBean;
-import com.hjcrm.resource.entity.Dealrecord;
-import com.hjcrm.resource.entity.Resource;
 import com.hjcrm.resource.entity.Student;
-import com.hjcrm.resource.entity.Visitrecord;
-import com.hjcrm.resource.service.IResourceService;
+
 import com.hjcrm.resource.service.IStudentService;
 import com.hjcrm.resource.util.ExcelExportUtil;
-import com.hjcrm.resource.util.ExcelReaderUtil;
 import com.hjcrm.system.entity.User;
 import com.hjcrm.system.service.IUserService;
 
@@ -53,8 +49,7 @@ public class StudentController extends BaseController {
 	
 	@Autowired
 	private IStudentService studentService;
-	@Autowired
-	private IResourceService resourceService;
+
 	@Autowired
 	private IUserService userService;
 	
@@ -522,132 +517,7 @@ public class StudentController extends BaseController {
 		}
 		return ReturnConstants.PARAM_NULL;
 	}
-	
-	
-	/**
-	 * 增加成交记录
-	 *  只能是新增的状态，才可以增加成交记录
-	 * @param request
-	 * @param userid
-	 * @return
-	 * @author  
-	 * @date 2020-09-8 上午10:06:04
-	 */
-	@RequestMapping(value="/student/addDealrecord.do",method = RequestMethod.POST)
-	public @ResponseBody String addDealrecord(HttpServletRequest request,String userid,Dealrecord dealrecord,String subjects,String studentId,Student student){
-		List<Student> list = studentService.queryStudents(null,studentId, null,null,null, null);
-		if (studentId != null && !"".equals(studentId.trim())&&student.getIsOnlineBuy()!=1) {
-			if (list != null && list.size() > 0) {
-				Integer studentstate = list.get(0).getStudentstate();
-				//1：如果是新增，修改学员状态为已成交
-				if (studentstate == StateConstants.studentstate0) {//0新增
-					list.get(0).setStudentstate(StateConstants.studentstate1);
-					list.get(0).setDealprice(student.getDealprice());//成交金额
-					list.get(0).setDealtime(student.getDealtime());//成交时间
-					list.get(0).setIshavenetedu(student.getIshavenetedu());//是否有网络培训费
-					list.get(0).setNetedumoney(student.getNetedumoney());//网络培训费金额
-					//list.get(0).setIsOnlineBuy(student.getIsOnlineBuy());//是否在线购买
-					list.get(0).setCourseid(student.getCourseid());//课程
-					list.get(0).setRemituser(student.getRemituser());//代汇款人
-					list.get(0).setPreferinfo(student.getPreferinfo());//优惠信息
-					studentService.saveOrUpdate(list.get(0));
-					if (subjects != null && !"".equals(subjects.trim())) {
-						String[] subject = subjects.split(",");
-						for (int i = 0; i < subject.length; i++) {
-							//2：增加学员的成交记录（弹框填写成交信息和学员信息）
-							Dealrecord dealrecordafter = new Dealrecord();
-							dealrecordafter.setCourseid(dealrecord.getCourseid());
-							dealrecordafter.setSubjectid(new Long(subject[i]));
-							dealrecordafter.setStudentId(new Long(studentId));
-							resourceService.saveOrUpdate(dealrecordafter);
-						}
-					}
-					return ReturnConstants.SUCCESS;//已成功成交学员
-				}
-				return ReturnConstants.USER_NO_POWER;//非新增或已退回状态的学员，不能添加成交记录
-			}
-		}else{
-			List<Student> liststudent = studentService.queryOnLineStudents(list.get(0).getPhone(),null, null);
-			      if (liststudent != null && liststudent.size() > 0) {
-			    	  outterLoop:for (Student onlionStudent : liststudent) {                
-							if(onlionStudent.getCourseid()==Integer.parseInt(String.valueOf(dealrecord.getCourseid()))){
-								if(subjects!=null&&subjects.split(",").length==onlionStudent.getSubjectids().split(",").length){
-									for (String s : subjects.split(",")) {
-										if(onlionStudent.getSubjectids().contains(s)){
-											continue;
-										}else{
-											return ReturnConstants.OLION_NULL;
-										}
-									}
-								}else{
-									continue outterLoop;
-								}
-								onlionStudent.setBelongid(list.get(0).getBelongid());
-								//onlionStudent.setResourceId(listresource.get(0).getResourceId());
-								if(onlionStudent.getStudentName()==null)
-								onlionStudent.setStudentName(list.get(0).getStudentName());
-								if(onlionStudent.getAddress()==null)
-								onlionStudent.setAddress(list.get(0).getAddress());
-								onlionStudent.setSource(list.get(0).getSource());
-								if(onlionStudent.getEmail()==null)
-								onlionStudent.setEmail(list.get(0).getEmail());
-								onlionStudent.setBanci(list.get(0).getBanci());
-								onlionStudent.setRemituser(student.getRemituser());
-								onlionStudent.setTel(list.get(0).getTel());
-								if(onlionStudent.getCompany()==null)
-								onlionStudent.setCompany(list.get(0).getCompany());
-								onlionStudent.setPreferinfo(student.getPreferinfo());
-								onlionStudent.setIshavenetedu(student.getIshavenetedu());//是否有网络培训费
-								onlionStudent.setNetedumoney(student.getNetedumoney());//网络培训费金额
-							//	onlionStudent.setStudentstate(StateConstants.studentstate3);
-								studentService.saveOrUpdate(onlionStudent);
-								List<Visitrecord> listRecords = resourceService.queryVisitrecordsByresourceId(null, list.get(0).getStudentId());
-								for (Visitrecord v : listRecords) {
-									v.setStudentId(onlionStudent.getStudentId());
-									resourceService.saveOrUpdate(v);
-								}
-								studentService.deleteStudent(String.valueOf(list.get(0).getStudentId()));
-							}
-						}
-						}else{
-							return ReturnConstants.OLION_NULL;
-						}
-			      return ReturnConstants.SUCCESS;//已成功成交学员
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	/**
-	 * 增加学员回访记录
-	 * @param request
-	 * @param studentId
-	 * @param userid
-	 * @return
-	 * @author  
-	 * @date 2020-09-8 上午9:25:48
-	 */
-	@RequestMapping(value = "/student/addStudentVisitrecord.do",method = RequestMethod.POST)
-	public @ResponseBody String addStudentVisitrecord(HttpServletRequest request,String studentId,Long userid,Visitrecord visitrecord){
-		if (studentId != null && !"".equals(studentId) && userid != null) {
-			userid = UserContext.getLoginUser().getUserid();
-			List<Student> list = studentService.queryStudents(null,studentId, null,null,null, null);
-			if (list != null && list.size() > 0) {
-				Long resourceId = list.get(0).getResourceId();
-				if (resourceId != null) {
-					visitrecord.setUserid(userid);
-					visitrecord.setResourceId(resourceId);
-					resourceService.saveOrUpdate(visitrecord);
-				}else{
-					visitrecord.setUserid(userid);
-					visitrecord.setStudentId(new Long(studentId));
-					resourceService.saveOrUpdate(visitrecord);
-				}
-				return ReturnConstants.SUCCESS;
-			}
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
+
 	/**
 	 * 删除学员(新增状态)
 	 * @param request
@@ -689,24 +559,24 @@ public class StudentController extends BaseController {
 				studentService.saveOrUpdate(student);
 			}else{
 				//start likang 2016-12-21 9:32:59  ==TODO 学员管理新建学员时在资源管理中判断是否该手机号已存在，若存在，则提示用户在资源管理中成交。
-				List<Resource> listphone =  resourceService.queryResourceByPhone(student.getPhone());
-				if (listphone != null && listphone.size() > 0 ) {
-					for (int i = 0; i < listphone.size(); i++) {
-						Long userphoneid = listphone.get(i).getUserid();
-						Long userphonebelongid = listphone.get(i).getBelongid();
-						System.out.println(UserContext.getLoginUser().getUserid());
-						if (userphoneid == UserContext.getLoginUser().getUserid() || (userphonebelongid !=null && userphonebelongid == UserContext.getLoginUser().getUserid()) ) {
-							if (listphone.get(i).getIsStudent() != null && listphone.get(i).getIsStudent() == 0) {
-								return ReturnConstants.USER_YES_EXIST;
-							}
-						}
-					}
-				}
-				//end likang 2016-12-21 9:32:59  ==TODO 
-				student.setBelongid(UserContext.getLoginUser().getUserid());
-				student.setUserid(UserContext.getLoginUser().getUserid());
-				student.setStudentstate(StateConstants.studentstate0);//新增
-				studentService.saveOrUpdate(student);
+//				List<Resource> listphone =  resourceService.queryResourceByPhone(student.getPhone());
+//				if (listphone != null && listphone.size() > 0 ) {
+//					for (int i = 0; i < listphone.size(); i++) {
+//						Long userphoneid = listphone.get(i).getUserid();
+//						Long userphonebelongid = listphone.get(i).getBelongid();
+//						System.out.println(UserContext.getLoginUser().getUserid());
+//						if (userphoneid == UserContext.getLoginUser().getUserid() || (userphonebelongid !=null && userphonebelongid == UserContext.getLoginUser().getUserid()) ) {
+//							if (listphone.get(i).getIsStudent() != null && listphone.get(i).getIsStudent() == 0) {
+//								return ReturnConstants.USER_YES_EXIST;
+//							}
+//						}
+//					}
+//				}
+//				//end likang 2016-12-21 9:32:59  ==TODO 
+//				student.setBelongid(UserContext.getLoginUser().getUserid());
+//				student.setUserid(UserContext.getLoginUser().getUserid());
+//				student.setStudentstate(StateConstants.studentstate0);//新增
+//				studentService.saveOrUpdate(student);
 			}
 			return ReturnConstants.SUCCESS;
 		}
@@ -1202,134 +1072,5 @@ public class StudentController extends BaseController {
 		List<User> list = studentService.queryxzCustoms();
 		return jsonToPage(list);
 	}
-	
-	
-	/**
-	 * 在线购买学员批量导入
-	 * @param request
-	 * @param file
-	 * @return
-	 * @author 倪广
-	 * @date 2017-2-20 16:14:19
-	 */
-//	@CacheEvict(value = "baseCache")
-	@RequestMapping(value = "/student/excelImportOnlionBuy.do",method = RequestMethod.POST)
-	public @ResponseBody String excelImportOnlionBuy(HttpServletRequest request,@RequestParam("resourceFile")MultipartFile resourceFile){
-		Date now = new Date(); 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		if (resourceFile != null) {
-			//存放路径
-			String realPath = request.getRealPath("");
-			if(!realPath.endsWith(File.separator)){
-				realPath += File.separator;
-			}
-			String originalFilename = resourceFile.getOriginalFilename();// 获取原始文件名
-			//年月日文件夹
-			String yearDir = new SimpleDateFormat("yyyyMMdd").format(new Date());
-			//文件名称
-			String fileName = new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date())+originalFilename;
-			String filePath = "upload"+File.separator+"resourcefile"+File.separator+yearDir+File.separator+fileName;;
-			File destFile = new File(realPath+filePath);
-			if(!destFile.getParentFile().exists()){
-				destFile.getParentFile().mkdirs();
-			}
-			try {
-				resourceFile.transferTo(destFile);//写入服务器
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-			try {
-				//读取excel 
-				FileInputStream is = new FileInputStream(destFile); // 文件流
-				Map<String,Object> returnMaps = ExcelReaderUtil.readExcelContentOlionBuy(is);//读取excel
-				if (returnMaps.get("listdata")!= null) {
-					//写入数据库
-					List<Student> listresource = new ArrayList<Student>();
-					List<Map> listmap = new ArrayList<Map>();
-					String str = null;
-					for (int i = 0; i < returnMaps.size(); i++) {
-						listmap = (List<Map>) returnMaps.get("listdata");
-						for (int j = 0; j < listmap.size(); j++) {
-							Student onlionBuy = new Student();
-								str = listmap.get(j).get("userName")!= null && !"".equals(listmap.get(j).get("userName"))?listmap.get(j).get("userName").toString().trim():null;//创建者
-								onlionBuy.setStudentName(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("IDcard")!=null && !"".equals(listmap.get(j).get("IDcard"))?listmap.get(j).get("IDcard").toString().trim():null;//渠道
-								onlionBuy.setIdCard(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("phone")!=null && !"".equals(listmap.get(j).get("phone"))?listmap.get(j).get("phone").toString().trim():null;//地域
-								onlionBuy.setPhone(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("email")!=null && !"".equals(listmap.get(j).get("email"))?listmap.get(j).get("email").toString().trim():null;//姓名
-								onlionBuy.setEmail(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("company")!=null && !"".equals(listmap.get(j).get("company"))?listmap.get(j).get("company").toString().trim():null;//手机
-								onlionBuy.setCompany(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("address")!=null && !"".equals(listmap.get(j).get("address"))?listmap.get(j).get("address").toString().trim():null;//手机
-								onlionBuy.setAddress(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("arrive_money")!=null && !"".equals(listmap.get(j).get("arrive_money"))?listmap.get(j).get("arrive_money").toString().trim():null;//运营咨询备注
-								onlionBuy.setArrive_money(str!=null?str:null);
-								onlionBuy.setDealprice(str!=null?str:null);
-								str = null;
-								
-								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-								str = listmap.get(j).get("arrive_time")!=null && !"".equals(listmap.get(j).get("arrive_time"))?listmap.get(j).get("arrive_time").toString().trim():null;//所属人
-								onlionBuy.setArrive_time(str!=null?str:null);
-								onlionBuy.setDealtime(str!=null?new Timestamp(sdf.parse(str).getTime()):null);
-								str = null;
-								
-								str = listmap.get(j).get("remitWay")!=null && !"".equals(listmap.get(j).get("remitWay"))?listmap.get(j).get("remitWay").toString().trim():null;//所属人
-								onlionBuy.setRemitWay(str!=null?str:null);
-								str = null;
-								
-								str = listmap.get(j).get("courseId")!=null && !"".equals(listmap.get(j).get("courseId"))?listmap.get(j).get("courseId").toString().trim():null;//咨询课程
-								onlionBuy.setCourseid(str!=null?new Integer(str):null);
-								str = null;
-								
-								str = listmap.get(j).get("subjectId")!=null && !"".equals(listmap.get(j).get("subjectId"))?listmap.get(j).get("subjectId").toString().trim():null;//咨询课程
-								onlionBuy.setSubjectids(str!=null?str:null);
-								str = null;
-							
-							listresource.add(onlionBuy);
-						}
-					}
-					for (int i = 0; i < listresource.size(); i++) {//写入数据库
-							listresource.get(i).setDr(0);
-							listresource.get(i).setIsOnlineBuy(1);//是否在线购买
-							listresource.get(i).setCreate_time(new Timestamp(System.currentTimeMillis()));
-							listresource.get(i).setStudentstate(3);
-							listresource.get(i).setUserid(UserContext.getLoginUser().getUserid());
-						    studentService.saveOrUpdate(listresource.get(i));
-						    if (listresource.get(i).getSubjectids() != null && !"".equals(listresource.get(i).getSubjectids().trim())) {
-								String[] subject = listresource.get(i).getSubjectids().split(",");
-								for (int j = 0; j < subject.length; j++) {
-									//2：增加学员的成交记录（弹框填写成交信息和学员信息）
-									Dealrecord dealrecordafter = new Dealrecord();
-									dealrecordafter.setStudentId(listresource.get(i).getStudentId());
-									dealrecordafter.setCourseid(new Long(listresource.get(i).getCourseid()));
-									dealrecordafter.setSubjectid(new Long(subject[j]));
-									resourceService.saveOrUpdate(dealrecordafter);
-								}
-							}
-					}
-					return ReturnConstants.SUCCESS;
-				}
-				return ReturnConstants.EXCEL_NULL;
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-		}
-		return ReturnConstants.PARAM_NULL;
-	}
-	
-	
-	
+
 }

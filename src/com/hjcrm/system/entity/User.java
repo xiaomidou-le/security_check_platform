@@ -25,7 +25,6 @@ public class User extends BaseEntity implements Serializable{
 	private String password;// 密码
 	private String phone;// 手机号码
 	private String mobile;// 座机
-	//private Long deptid;// 部门ID
 	private Long roleid;// 角色ID
 	private Integer state;// 状态 0 可用 1不可用
 	private Integer sex;// 性别 0男 1女
@@ -38,8 +37,7 @@ public class User extends BaseEntity implements Serializable{
 	private Timestamp update_time;//更新时间
 	private String note;//备注
 	private Integer ischange;//是否修改密码
-	//private Integer deptgroup;//部门大类：0市场部 、1基金销售、 2机构客户部、 3重庆代理1、4重庆代理2 、5西安代理 、6南京代理1、 7南京代理2、8苏州代理、9泰州代理、10长春代理 、11太原代理
-	
+
 	@Transient
 	private String deptname;//部门名称
 	@Transient

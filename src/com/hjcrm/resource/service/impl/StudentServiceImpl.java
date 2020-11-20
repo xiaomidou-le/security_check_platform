@@ -332,20 +332,6 @@ public class StudentServiceImpl implements IStudentService {
 		List<Student> list = studentDao.queryByStatment("queryAFPTotalStudents", param, pageBean);
 		return list;
 	}
-	
-	/**
-	 * 查询AFP回访学员(客服)
-	 */
-	
-	public List<Student> queryAFPhfStudents(String deptid, String roleid,String userid, PageBean pageBean) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("deptid", deptid);
-		param.put("roleid", roleid);
-		param.put("userid", userid);
-		List<Student> list = studentDao.queryByStatment("queryAFPhfStudents", param, pageBean);
-		return list;
-	}
-
 
 	/**
 	 * 查询CFP总表学员(客服)
@@ -642,6 +628,29 @@ public class StudentServiceImpl implements IStudentService {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("studentIds", studentIds);
 		dealRecordDao.updateByStatment("updatedcispass", param);
+	}
+
+
+	@Override
+	public List<Student> queryStudents(String resourceId, String studentIds, Long deptid, Long roleid, Long userid,
+			PageBean pageBean) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Student> queryhfStudents(String resourceId, String studentIds, Long deptid, Long userid,
+			PageBean pageBean) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Student> queryAFPhfStudents(String deptid, String roleid, String userid, PageBean pageBean) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

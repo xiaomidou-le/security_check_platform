@@ -61,21 +61,15 @@ public class UserLoginController extends BaseController {
 	 * @param email 邮箱
 	 * @param phone 手机号码
 	 * @param password 密码
-	 * @param model
-	 * @param request
-	 * @param sign 0   1  
-	 * @return
-	 * w
 	 */
 	@RequestMapping(value="/login.do",method = RequestMethod.POST)
-	public String login(String sign,String email,String phone,String password,Model model,HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException {
-		if (email != null && !"".equals(email) && sign != null && !"".equals(sign.trim())) {
-//		if (StringUtils.isNotBlank(email) && sign != null && !"".equals(sign.trim())) {
-			if ("0".equals(sign.trim())) {
-				email = email + ContextUtil.getInitConfig("email_suffix");//获取邮箱后缀
-			}else if("1".equals(sign.trim())){
-				email = email + ContextUtil.getInitConfig("email_miduo_suffix");//获取邮箱后缀
-			}
+	public String login(String email,String phone,String password,Model model,HttpServletRequest request,HttpServletResponse response) throws UnsupportedEncodingException {
+		if (email != null && !"".equals(email)) {
+//			if ("0".equals(sign.trim())) {
+//				email = email + ContextUtil.getInitConfig("email_suffix");//获取邮箱后缀
+//			}else if("1".equals(sign.trim())){
+//				email = email + ContextUtil.getInitConfig("email_miduo_suffix");//获取邮箱后缀
+//			}
 			User user = userLoginService.authLoginNameIsExist(email, null);
 			if (user == null) {
 				model.addAttribute("msg", ReturnConstants.USER_NOT_EXIST);// 用户不存在或者用户名错误

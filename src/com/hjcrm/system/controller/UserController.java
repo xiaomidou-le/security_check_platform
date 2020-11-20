@@ -105,7 +105,6 @@ public class UserController extends BaseController {
 		return ReturnConstants.PARAM_NULL;
 	}
 	
-	
 	/**
 	 * 获取用户列表/根据用户手机号码，邮箱，查询符合条件的用户
 	 * @param user
@@ -116,12 +115,9 @@ public class UserController extends BaseController {
 	 * @date 2020-9-18 上午10:22:43
 	 */
 	@RequestMapping(value = "/system/userlist.do", method = RequestMethod.GET)
-	public @ResponseBody String userList(User user,Integer pageSize, Integer currentPage){
-		if (UserContext.getLoginUser() != null) {
-			List<User> queryUserList = userService.queryUserList(user, processPageBean(pageSize, currentPage));
-			return jsonToPage(queryUserList) ;
-		}
-		return ReturnConstants.USER_NO_LOGIN;
+	public @ResponseBody String userList(User user, Integer pageSize, Integer currentPage){
+		List<User> queryUserList = userService.queryUserList(user, processPageBean(pageSize, currentPage));
+		return jsonToPage(queryUserList) ;
 	}
 	
 	/**

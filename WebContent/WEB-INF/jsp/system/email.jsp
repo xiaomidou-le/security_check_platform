@@ -30,8 +30,7 @@
         <h3 class="prossess"><img src="../system/img/send.jpg"></h3> 
         <div class="input-group">
 	       	<label>请输入邮箱：</label>
-	        <input type="text" class="text" id="email" name="email">
-	        <span class="huajin">@qq.com</span>	        
+	        <input type="text" class="text" id="email" name="email">       
 	    </div>
 	    <p class="error"></p> 
 	    <p class="send"><a href="javascript:;" onclick="sendEmail()">确认提交</a></p>  
@@ -54,7 +53,8 @@
 <script type="text/javascript" src="../common/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript">	
 	function sendEmail(){
-		var email = $('#email').val()+"@qq.com";		
+		//var email = $('#email').val()+"@qq.com";
+		var email = $('#email').val();		
 		if (email == "" || email == null) {
 			$('.error').html("内容不能为空");
 			return false; 

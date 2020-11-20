@@ -702,17 +702,17 @@
 	
 	<!-- 查询所有销售人员 -->
 	<select id="queryAllXiaoShou" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.User">
-	 	 select * from hj_user u where 1=1 and u.dr = 0 and u.deptid in(5,7,8,9,10,11,12,13,14,15,16) 
+	 	 select * from hj_user u where 1=1 and u.dr = 0 
 	</select>
 	
 	<!-- 查询所有部门销售人员 -->
 	<select id="queryXiaoShouByRoleid" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.User">
-	 	 select * from hj_user u where 1=1 and u.dr = 0 and u.deptid = #{deptid} 
+	 	 select * from hj_user u where 1=1 and u.dr = 0
 	</select>
 	
 	<!-- 查询所有的创建者(资源) -->
 	<select id="queryAllCreatePerson" parameterType="java.util.Map" resultType="com.hjcrm.system.entity.User">
-	 	 select * from hj_user u where 1=1 and u.dr = 0 and u.deptid in(2,5,7,8,9,10,11,12,13,14,15,16)
+	 	 select * from hj_user u where 1=1 and u.dr = 0
 	</select>
 	
 	<!-- 查询重复的手机号列表-->
@@ -980,7 +980,6 @@
 			*
 		from hj_user u
 		where 1=1 and u.dr = 0
-		and u.deptid = #{deptid}
 	</select>
 	
 	<!-- 删除成交记录 -->

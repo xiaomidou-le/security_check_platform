@@ -46,9 +46,6 @@
 					      <input type="text" class="text" id="email" placeholder="请输入用户名" name="email" >
 					    </div>
 					  </div>					
-					<select class="huajin" name="sign">
-						<option value="0">@qq.com</option>
-					</select>
 				</li>
 				<li>
 					<div class="input-group">
@@ -71,7 +68,8 @@
 <script type="text/javascript" src="${PATH }/common/js/angular.min.js"></script>
 <script type="text/javascript">
 	function loginValidate(){
-		var usernameObj = $("#email").val()+"@qq.com";
+		//var usernameObj = $("#email").val()+"@qq.com";
+		var usernameObj = $("#email").val();
 		var passwordObj = $("#password");
 		if($.trim(usernameObj).length == 0){
 			usernameObj.tooltip("show");
@@ -90,9 +88,10 @@
 			loginFailInfoObj.html("登录失败：<font color='#FF0000'>"+"用户名或者密码错误"+"</font>")
 		}
 		}else{
-			loginFailInfoObj.html("登录失败：<font color='#FF0000'>"+"未知错误，请联系管理员"+"</font>")
+			loginFailInfoObj.html("登录失败：<font color='#FF0000'>"+"用户名或者密码错误"+"</font>")
+			//loginFailInfoObj.html("登录失败：<font color='#FF0000'>"+"未知错误，请联系管理员"+"</font>")
 		}
-	}
+	
 </script>
 </body>
 </html>

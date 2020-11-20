@@ -39,13 +39,13 @@ public interface IRoleService {
 	public void delete(String ids);
 	
 	/**
-	 * 根据部门ID，查询部门下的所有角色
-	 * @param deptid
+	 * 根据部门ID，查询系统中所有的权限
+	 * @param 
 	 * @return
 	 * @author  
 	 * @date 2020-9-20 上午9:22:48
 	 */
-	public List<Role> queryRoleByDeptid(Long deptid);
+	public List<Role> queryRoleList();
 	
 	/**
 	 * 修改角色对应的菜单，删除对应关系

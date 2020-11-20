@@ -179,13 +179,10 @@ public class RoleController extends BaseController{
 	 * @author  
 	 * @date 2020-9-20 上午9:28:29
 	 */
-	@RequestMapping(value = "/role/queryRoleByDeptid.do",method = RequestMethod.GET)
-	public @ResponseBody String queryRoleByDeptid(HttpServletRequest request,Long deptid){
-		 if (deptid != null) {
-			List<Role> list = roleService.queryRoleByDeptid(deptid);
-			return json(list);
-		}
-		return ReturnConstants.PARAM_NULL;
+	@RequestMapping(value = "/role/queryRoleList.do",method = RequestMethod.GET)
+	public @ResponseBody String queryRoleList(HttpServletRequest request){
+		List<Role> list = roleService.queryRoleList();
+		return json(list);
 	}
 	
 	

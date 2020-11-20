@@ -55,14 +55,9 @@ public class RoleServiceImpl implements IRoleService {
 	 * 根据部门ID，查询部门下的所有角色
 	 */
 	
-	public List<Role> queryRoleByDeptid(Long deptid) {
-		if (deptid != null) {
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("deptid", deptid);
-			List<Role> list = roleDao.queryByStatment("queryRoleByDeptid", param, null);
-			return list;
-		}
-		return null;
+	public List<Role> queryRoleList() {
+		List<Role> list = roleDao.queryByStatment("queryRoleList", null, null);
+		return list;
 	}
 
 	/**
