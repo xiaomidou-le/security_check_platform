@@ -21,7 +21,7 @@
 	<link rel="stylesheet" type="text/css" href="${PATH }/common/css/bootstrap.min.css" />	
 	<link rel="stylesheet" type="text/css" href="${PATH }/common/css/common.css" />
 	<link rel="stylesheet" type="text/css" href="${PATH }/common/css/winTip.css" />
-	<title>首页</title>
+	<title>欢迎访问ThoughtWorks安全服务平台</title>
 	<script type="text/javascript">
 		
 	</script>	

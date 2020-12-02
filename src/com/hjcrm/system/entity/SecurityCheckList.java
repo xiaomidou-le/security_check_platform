@@ -1,7 +1,6 @@
 package com.hjcrm.system.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import com.hjcrm.publics.util.BaseEntity;
 
@@ -15,14 +14,7 @@ public class SecurityCheckList extends BaseEntity implements Serializable{
 	private String description;
 	private String url;
 	private String name;
-	private Integer result;
 	
-	public Integer getResult() {
-		return result;
-	}
-	public void setResult(Integer result) {
-		this.result = result;
-	}
 	
 	public Long getId() {
 		return id;

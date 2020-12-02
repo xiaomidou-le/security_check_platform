@@ -1,6 +1,6 @@
  //angular 分页展示数据
 var myapp = angular.module('app', []);
-myapp.controller('securityCheckCtrl',function($scope,$http){                  	
+myapp.controller('securityCheckResult',function($scope,$http){                  	
 	$scope.state = function (aa) {            	    
 	    var red = "";
 	    if (0 == aa) {            	       
@@ -24,11 +24,20 @@ myapp.controller('securityCheckCtrl',function($scope,$http){
     $scope.currentPage = 1;//当前页
     $scope.pageTotal =0; // 总页数 
     $scope.pages = [];
+ 	$scope.getScanResult = function(result) {
+		if  (result == 0) {
+			return "检测中";
+		} else if (result == 1) {
+			return "失败";
+		} else {
+			return "成功";
+		}
+	   }
     //初始化第一页
     forPages($scope.currentPage,$scope.pageSize,function(){});
     //获取数据
      function forPages (page,size,callback){
-        $http.get("../checkList/securityUsecaseList.do?currentPage="+page+"&pageSize="+size).success(function(Data){  
+        $http.get("../checkList/securityCheckResultList.do?currentPage="+page+"&pageSize="+size).success(function(Data){  
         	 		        	             	
          	$scope.count=Data.total;
          	$scope.list = Data.rows;
@@ -79,46 +88,10 @@ myapp.controller('securityCheckCtrl',function($scope,$http){
 	    return indexes;  
 	 		console.info(indexes);
 	};
-	
-	$http.get("../dept/queryDept.do").success(function(Data){
-     	$scope.deptname = Data.rows;
-    }); 
+
 	
 });
 
-/*根据部门ID，查询部门下的所有角色*/
-$("#deptid").change(function() {
-	var checkDeptname = $('#deptid option:selected').val();
-	checkRolename("#roleid",checkDeptname);
-});
-
-$("#ch-deptid").change(function() {
-	var checkDeptname = $('#ch-deptid option:selected').val();	
-	checkRolename("#ch-roleid",checkDeptname);   
-});
-/*根据部门ID，查询部门下的所有角色*/
-function checkRolename(ele,deptid) {
-    var clearname = $(ele);
-    clearname.html(''); //清空原有的选项    
-    $.ajax({        			
-		   type: 'GET',
-		   data: {
-			 deptid:deptid
-		   },
-		   url: "../role/queryRoleByDeptid.do",		   
-		   success: function(data) {			   
-			   var dataObj=eval("("+data+")");//转换为json对象
-			   var list = dataObj.rows;			   
-		        $.each(list, function(index, array) {
-		        	//循环获取数据
-	                var roleid = array.roleid|| "";	
-	                var rolename = array.rolename || "";
-		        	var option = '<option value="'+roleid+'">' + rolename + '</option>';
-		        	clearname.append(option);
-			    });
-		   }
-	});
-}
 
 //增加
 function addUser(){
@@ -384,7 +357,7 @@ function startSecurityCheck() {
 			},
 			success: function(res) {
 				if (res == "success") {
-					alert("启动成功");
+					alert("扫描完成");
 				}
 				//window.location.reload();
 			}

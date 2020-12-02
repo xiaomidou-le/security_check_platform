@@ -32,6 +32,7 @@ public class JumpViewConstants {
 	
 	public static final String SECURITY_CHECK_MGR = "securityCheck/securityCheckMgr"; //安全校验管理
 	
+	public static final String SECURITY_CHECK_RESULT = "securityCheck/securityCheckResult"; //安全扫描结果展示页面
 	/****************************************************运营部*************************************************************************/
 	public static final String RESOURCE_YUNYING = "operate/resourcesMang";//运营部-资源管理界面
 	

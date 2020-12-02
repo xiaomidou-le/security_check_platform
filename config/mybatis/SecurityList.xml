@@ -6,9 +6,38 @@
 	<!-- 获取安全合规用例的列表 -->
 	<select id="querySecurityList" resultType="com.hjcrm.system.entity.SecurityCheckList">
 		select 
-			checkListTab.id, checkListTab.description, checkListTab.url, checkListTab.name,
-			checkListTab.result
+			checkListTab.id, checkListTab.description, checkListTab.url, checkListTab.name
 		from security_platform.security_usecase as checkListTab
 		ORDER BY checkListTab.create_time DESC
 	</select>
+	
+	<!-- 获取安全合规用例结果的列表 -->
+	<select id="querySecurityScanResult" resultType="com.hjcrm.system.entity.SecurityScanResult">
+		select 
+			result.id, usecaseTab.description, usecaseTab.url, usecaseTab.name, result.result
+		from security_platform.security_scan_result as result left join security_platform.security_usecase as usecaseTab
+        on result.usecase_id=usecaseTab.id
+		ORDER BY result.create_time DESC
+	</select>
+	
+	<!-- 向安全扫描结果表中插入数据 -->
+	<insert id="insertSecurityScanResult" parameterType="java.util.ArrayList">
+		insert into security_platform.security_scan_result
+		(ID, USECASE_ID, RESULT, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME) values
+		<foreach collection="list" item="item" index="index" separator=",">
+		(#{item.id}, #{item.usecaseId}, #{item.result}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+		</foreach>
+	</insert>
+	
+	<!-- 向安全检测结果表中更新扫描结果 -->
+	<update id="updateSecurityScanResult" parameterType="java.util.HashMap">
+		update security_platform.security_scan_result
+		set result=#{status}
+		where id in
+	    <foreach collection="ids" index="index" item="item" 
+	        separator="," open="(" close=")">
+	        #{item}
+	    </foreach>
+	</update>
+	
 </mapper> 

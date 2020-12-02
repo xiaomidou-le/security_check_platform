@@ -1,9 +1,12 @@
 package com.hjcrm.system.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.hjcrm.publics.util.PageBean;
+import com.hjcrm.system.entity.ScanResultDetail;
 import com.hjcrm.system.entity.SecurityCheckList;
+import com.hjcrm.system.entity.SecurityScanResult;
 
 public interface ICheckListService {
 	/**
@@ -15,4 +18,32 @@ public interface ICheckListService {
 	 */
 	//private SecurityCheckListEntity checkListEntity;
 	public List<SecurityCheckList> queryCheckList(PageBean pageBean);
+	
+	/**
+	 * 查询扫描结果
+	 * @param 
+	 * @return
+	 * @author wangjing
+	 * @date 2020-11-24 16:37:32
+	 */
+
+	public List<SecurityScanResult> queryCheckResultList(PageBean pageBean);
+
+	/**
+	 * 插入一条扫描数据
+	 * @param 
+	 * @return
+	 * @author wangjing
+	 * @date 2020-11-25 10:35:30
+	 */
+	public ArrayList<ScanResultDetail> insertScanResult(Long[] usecaseIds);
+	
+	/**
+	 * 更新扫描数据的状态
+	 * @param 
+	 * @return
+	 * @author wangjing
+	 * @date 2020-11-25 18:40:00
+	 */
+	public int updateScanResult(List<Long> ids, Integer status);
 }
