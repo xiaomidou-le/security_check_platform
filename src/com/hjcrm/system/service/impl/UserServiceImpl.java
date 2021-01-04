@@ -96,8 +96,7 @@ public class UserServiceImpl implements IUserService{
 	/**
 	 * 根据用户ID，查询用户信息
 	 */
-	@Cacheable(value = "baseCache",key = "#user_id+'queryByIdentity'")
-	
+	@Cacheable(value = "baseCache",key = "#user_id+'queryByIdentity'")	
 	public User queryByIdentity(Long user_id) {
 		List<User> users = userDao.queryByStatment("queryByIdentity", user_id,null);
 		if (users != null && users.size() > 0) {

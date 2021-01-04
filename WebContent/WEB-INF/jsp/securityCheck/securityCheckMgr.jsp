@@ -24,16 +24,16 @@
 	
 	<div class="meun-btn">
        	<ul class="nav navbar-nav">
-			<li onclick="wuorder.ShowDiv('addnew','fade')">
+			<li class="blue" onclick="wuorder.ShowDiv('addnew','fade')">
 				<a href="javascript:;" class="create"><span class="glyphicon glyphicon-plus"></span>增加</a>
 			</li>
-			<li class="orange" onclick="changeUser()">
+			<li class="blue" onclick="changeUser()">
 				<a href="javascript:;" class="create"><span class="glyphicon glyphicon-pencil"></span>修改</a>
 			</li>
-			<li class="red" onclick="show()">
+			<li class="blue" onclick="show()">
 				<a href="javascript:;" class="create"><span class="glyphicon glyphicon-minus"></span>删除</a>
 			</li>
-			<li class="green" onclick="wuorder.ShowDiv('filter','fade')">
+			<li class="blue" onclick="wuorder.ShowDiv('filter','fade')">
 				<a href="javascript:;" class="create"><span class="glyphicon glyphicon-zoom-in"></span>筛选</a>
 			</li>										
 			<form class="navbar-form navbar-left" role="search">
@@ -42,7 +42,7 @@
 				</div>
 				<a href="javascript:;"  class="btn" style="background: #4c7cba;">查询</a>
 			</form>
-			<li class="green" onclick="startSecurityCheck()">
+			<li class="blue" onclick="startSecurityCheck()">
 				<a href="javascript:;" class="create"><span class="glyphicon glyphicon-minus"></span>启动</a>
 			</li>
 		</ul>

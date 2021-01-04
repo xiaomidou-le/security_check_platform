@@ -77,7 +77,7 @@
 	    	</div>
 	        <p class="navbar-text login_btn">	        	
 	            <a href="javascript:;" class="btn btn-primary" style="background-color: #337ab7;" onclick="wuorder.ShowDiv('uotTip','fade')">退出</a>                     
-	            <a href="javascript:;" class="btn btn-danger" onclick="wuorder.ShowDiv('updpwd','fade')">修改密码</a>
+	            <a href="javascript:;" class="btn" style="background: #4c7cba;" onclick="wuorder.ShowDiv('updpwd','fade')">修改密码</a>
 	        </p>
 	    </div>
 	</div>	

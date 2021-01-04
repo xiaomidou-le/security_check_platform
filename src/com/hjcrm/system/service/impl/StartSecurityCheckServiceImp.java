@@ -18,8 +18,8 @@ public class StartSecurityCheckServiceImp implements IStartSecurityCheckService{
 	@Autowired
 	private ICheckListService iCheckListService;
 	@Override
-	public void startSecurityCheck(Long resultId, Long usecaseNo) {
-		SecurityScanThread securityScanThread = new SecurityScanThread(resultId, usecaseNo, iCheckListService);
+	public void startSecurityCheck(Long resultId, Long usecaseNo, String reportPath) {
+		SecurityScanThread securityScanThread = new SecurityScanThread(resultId, usecaseNo, iCheckListService, reportPath);
 		securityScanThread.start();
 	}
     private static void closeStream(Closeable stream) {

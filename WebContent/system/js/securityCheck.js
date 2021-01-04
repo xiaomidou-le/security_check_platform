@@ -86,40 +86,6 @@ myapp.controller('securityCheckCtrl',function($scope,$http){
 	
 });
 
-/*根据部门ID，查询部门下的所有角色*/
-$("#deptid").change(function() {
-	var checkDeptname = $('#deptid option:selected').val();
-	checkRolename("#roleid",checkDeptname);
-});
-
-$("#ch-deptid").change(function() {
-	var checkDeptname = $('#ch-deptid option:selected').val();	
-	checkRolename("#ch-roleid",checkDeptname);   
-});
-/*根据部门ID，查询部门下的所有角色*/
-function checkRolename(ele,deptid) {
-    var clearname = $(ele);
-    clearname.html(''); //清空原有的选项    
-    $.ajax({        			
-		   type: 'GET',
-		   data: {
-			 deptid:deptid
-		   },
-		   url: "../role/queryRoleByDeptid.do",		   
-		   success: function(data) {			   
-			   var dataObj=eval("("+data+")");//转换为json对象
-			   var list = dataObj.rows;			   
-		        $.each(list, function(index, array) {
-		        	//循环获取数据
-	                var roleid = array.roleid|| "";	
-	                var rolename = array.rolename || "";
-		        	var option = '<option value="'+roleid+'">' + rolename + '</option>';
-		        	clearname.append(option);
-			    });
-		   }
-	});
-}
-
 //增加
 function addUser(){
 	 var username = $('#username').val();
@@ -383,6 +349,7 @@ function startSecurityCheck() {
 				usecaseIds: idstr
 			},
 			success: function(res) {
+				ids = [];
 				if (res == "success") {
 					alert("启动成功");
 				}

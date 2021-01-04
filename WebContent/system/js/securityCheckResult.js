@@ -35,10 +35,11 @@ myapp.controller('securityCheckResult',function($scope,$http){
 	   }
     //初始化第一页
     forPages($scope.currentPage,$scope.pageSize,function(){});
-    //获取数据
+	var timer = setInterval(function(){forPages($scope.currentPage,$scope.pageSize,function(){});}, 10000);
+
+	//获取数据
      function forPages (page,size,callback){
-        $http.get("../checkList/securityCheckResultList.do?currentPage="+page+"&pageSize="+size).success(function(Data){  
-        	 		        	             	
+        $http.get("../checkList/securityCheckResultList.do?currentPage="+page+"&pageSize="+size).success(function(Data){         	 		        	             	
          	$scope.count=Data.total;
          	$scope.list = Data.rows;
             $scope.currentPage = Data.currentPage;
@@ -91,103 +92,6 @@ myapp.controller('securityCheckResult',function($scope,$http){
 
 	
 });
-
-
-//增加
-function addUser(){
-	 var username = $('#username').val();
-	 var email = $('#email').val();
-	 var phone = $('#phone').val();
-	 var mobile = $('#mobile').val();
-	 var sex = $('input:radio[name="sex"]:checked').val();
-	 var deptid=$('#deptid option:selected').val();
-	 var roleid=$('#roleid option:selected').val();
-	 var state = $('input:radio[name="state"]:checked').val();
-	 var userphoto = $('#userphoto').val();
-	 var note = $('#note').val();
-	 var deptgroup = $('#deptgroup option:selected').val();
-	 	//var flag=true;
-		var regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-		var regPhone = /^1[3|4|5|8|7]\d{9}$/;
-		if (username =="" || username== null) {		
-			$('#usernameError').html('用户名不能为空！')
-			return false;
-		}
-		if (email =="" || email== null) {		
-			$('#emailError').html('邮箱不能为空！')
-			return false;
-		}else if (!regEmail.test(email)) {		
-			$('#emailError').html('邮箱格式不正确！')
-			return false;
-		}
-		if (phone =="" || phone== null) {		
-			$('#phoneError').html('手机号码不能为空！')
-			return false;
-		}else if (!regPhone.test(phone)) {		
-			$('#phoneError').html('请输入正确的手机号码！')
-			return false;
-		}
-		
-/*		if (deptid =="" || deptid== "请选择部门") {		
-			$('#deptidError').html('请选择部门！')
-			return false;
-		}*/
-		if (roleid =="" || roleid== "请选择角色") {		
-			$('#roleidError').html('请选择角色！')
-			 return false;
-		}
-		if (state =="" || state== null) {		
-			$('#stateError').html('请选择状态！')
-			return false;
-		};
-		$.ajax({
-			url: '../system/saveOrUpdate.do',
-			type: 'POST',
-			data: {
-				 username:username,
-			     email:email,
-			     phone:phone,
-			     mobile:mobile,
-			     sex:sex,
-			     deptid:deptid,
-			     roleid:roleid,
-			     state:state,
-			     userphoto:userphoto,
-			     note:note
-			},			
-			success: function(data) {				   
-				   if(data=="success"){	
-					   window.location.reload();
-						
-				   }else if(data=="0"){					   
-					   $('#usernameError').html('参数为空！');
-				   }
-				   else if(data=="1"){
-					   $('#usernameError').html('用户不存在！');
-					   
-				   }
-				   else if(data=="2"){
-					   $('#usernameError').html('密码错误！');
-				   }
-				   else if(data=="3"){
-					   $('#usernameError').html('旧密码不匹配！');
-				   }
-				   else if(data=="4"){
-					   $('#usernameError').html(data);
-				   }
-				   else if(data=="5"){					  
-					   $.winTip({
-							title: "提示~~~",
-							msg: "用户已经存在！",
-							src:"./system/img/tishi.png"
-						});					   
-				   }else {
-					 
-				   }
-			 }
-		}) 	
-			 
-}
 
 
 //全选
@@ -266,9 +170,6 @@ function changeText(objTag){
 	$('#ch-phone').val(phone);
 	$('#ch-mobile').val(mobile);
 	$('input:radio[name="ch-sex"][value='+'"'+sex+'"'+']').attr("checked",true);
-	
-	//$('#ch-deptid option:selected').html(deptname);
-	/*$('#ch-roleid option:selected').html(roleid);*/
 	checkRolename("#ch-roleid",deptid); 
 	
 	$('input:radio[name="ch-state"][value='+'"'+state+'"'+']').attr("checked",true);	
@@ -277,53 +178,14 @@ function changeText(objTag){
 	
 	
 };
-//修改
-function edit(){		
-	var dataid =$('input[type="checkbox"]:checked').parent().parent().attr('data-id');
-	var username = $('#ch-username').val();
-	var email = $('#ch-email').val();
-	var phone = $('#ch-phone').val();
-	var mobile = $('#ch-mobile').val();
-	var sex = $('input:radio[name="ch-sex"]:checked').val();
-	//var deptid=$('#ch-deptid option:selected').val();
-	var roleid=$('#ch-roleid option:selected').val();
-	var state = $('input:radio[name="ch-state"]:checked').val();
-	var userphoto = $('#ch-userphoto').val();
-	var note = $('#ch-note').val();
-	
- 	$.ajax({        			
-		   type: 'POST',
-		   data: {
-			 userid:dataid,
-			 username:username,
-		     email:email,
-		     phone:phone,
-		     mobile:mobile,
-		     sex:sex,
-		     roleid:roleid,
-		     state:state,
-		     userphoto:userphoto,
-		     note:note
-		   },
-		   url: "../system/saveOrUpdate.do",		   
-		   success: function(data) {			   
-			   if(data==5){				   
-					alert("用户已经存在!") ; 
-			   }else {
-				 console.log("修改成功") ;
-				 window.location.reload();
-			   }
-		   }
-	});
-}
 
 var ids = [];	
 function show() {		
-	$("input[type='checkbox']:not(:first):checked").each(function() {
+/*	$("input[type='checkbox']:not(:first):checked").each(function() {
 		var boxid = $(this).attr('class');
 		ids.push(boxid);
-	});
-	
+	});*/
+	ids = getUsecaseIds();
 	if(ids.length == 0) {
 		$.winTip({
 			title: "友情提示",
@@ -333,6 +195,14 @@ function show() {
 	} else {
 		$('.themisWrap').css('display','block');
 	}
+};
+function getUsecaseIds() {
+	var idList = [];
+	$("input[type='checkbox']:not(:first):checked").each(function() {
+		var boxid = $(this).attr('class');
+		idList.push(boxid);
+	});
+	return idList;
 };
 function startSecurityCheck() {		
 	$("input[type='checkbox']:not(:first):checked").each(function() {
@@ -356,6 +226,7 @@ function startSecurityCheck() {
 				usecaseIds: idstr
 			},
 			success: function(res) {
+				ids=[];
 				if (res == "success") {
 					alert("扫描完成");
 				}
@@ -363,6 +234,19 @@ function startSecurityCheck() {
 			}
 		});
 	}
+};
+function exportSecurityCheckReport() {
+		//var usecaseIdList = getUsecaseIds;
+		//var idstr = ids.join(",");
+/*		$.ajax({
+			type: "POST",
+			url: '../checkList/securityCheckExport.do',
+			success: function(res) {
+				ids = [];
+				//document.location.href = "/security_check_platform/haha20201229133646.zip";
+			}
+		});*/
+		document.location.href = "../checkList/securityCheckExport.do";
 };
 //确定删除
 function del() {

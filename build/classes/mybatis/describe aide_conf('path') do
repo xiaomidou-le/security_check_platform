@@ -1,0 +1,3 @@
+describe aide_conf('path') do
+  its('selection_lines') { should include '/sbin' }
+end

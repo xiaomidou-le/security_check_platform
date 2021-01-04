@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.hjcrm.publics.util.BaseEntity;
 
-public class SecurityCheckList extends BaseEntity implements Serializable{
+public class SecurityCheckItem extends BaseEntity implements Serializable{
 
 	/**
 	 * 
@@ -47,7 +47,7 @@ public class SecurityCheckList extends BaseEntity implements Serializable{
 	@Override
 	public String getIdColumnName() {
 		
-		return "checkListId";
+		return "id";
 	}
 
 }

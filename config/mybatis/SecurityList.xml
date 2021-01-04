@@ -4,17 +4,26 @@
 
 <mapper namespace="com.hjcrm.entity">	
 	<!-- 获取安全合规用例的列表 -->
-	<select id="querySecurityList" resultType="com.hjcrm.system.entity.SecurityCheckList">
+	<select id="querySecurityList" resultType="com.hjcrm.system.entity.SecurityCheckItem">
 		select 
 			checkListTab.id, checkListTab.description, checkListTab.url, checkListTab.name
 		from security_platform.security_usecase as checkListTab
 		ORDER BY checkListTab.create_time DESC
 	</select>
 	
+	<!-- 根据用例id获取安全合规用例 -->
+	<select id="queryUsecaseById"  parameterType="java.lang.Long" resultType="com.hjcrm.system.entity.SecurityCheckItem">
+		select 
+			checkListTab.id, checkListTab.description, checkListTab.url, checkListTab.name
+		from security_platform.security_usecase as checkListTab
+		where checkListTab.id=#{id}
+	</select>
+	
 	<!-- 获取安全合规用例结果的列表 -->
 	<select id="querySecurityScanResult" resultType="com.hjcrm.system.entity.SecurityScanResult">
 		select 
-			result.id, usecaseTab.description, usecaseTab.url, usecaseTab.name, result.result
+			result.id, usecaseTab.description, usecaseTab.url, usecaseTab.name, result.result,
+			result.create_time, result.create_by, result.update_time
 		from security_platform.security_scan_result as result left join security_platform.security_usecase as usecaseTab
         on result.usecase_id=usecaseTab.id
 		ORDER BY result.create_time DESC
@@ -32,12 +41,19 @@
 	<!-- 向安全检测结果表中更新扫描结果 -->
 	<update id="updateSecurityScanResult" parameterType="java.util.HashMap">
 		update security_platform.security_scan_result
-		set result=#{status}
+		set result=#{status}, update_time=#{updateTime}
 		where id in
 	    <foreach collection="ids" index="index" item="item" 
 	        separator="," open="(" close=")">
 	        #{item}
 	    </foreach>
 	</update>
+	
+	<!-- 向安全扫描报告表中插入数据 -->
+	<insert id="insertSecurityScanRport" parameterType="com.hjcrm.system.entity.ScanReportDetail">
+		insert into security_platform.security_report
+		(ID, USERID, PATH, CREATETIME, CREATEBY) values
+		(#{id}, #{userId}, #{reportPath}, #{createTime}, #{createBy})
+	</insert>	
 	
 </mapper> 

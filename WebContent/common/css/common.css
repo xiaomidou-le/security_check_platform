@@ -232,7 +232,7 @@ iframe {
 .left {
   width: 185px;
   height: 100%;
-  background: #333333;
+  background: #4c7cba;
   position: fixed;
   left: 0;
   top: 0; 
@@ -271,10 +271,11 @@ iframe {
   padding: 0 0 0 20px;
   cursor: default;
   font-size: 15px;
-  color: #fff;
+  color: #9cd;
   cursor: pointer;
   position: relative;
-  border-bottom: 1px solid #474747;
+  border-bottom: 2px solid #2366aa;
+  border-top: 2px solid #2366aa;
  }
  
 
@@ -286,18 +287,18 @@ iframe {
     line-height: 45px;
     height: 45px;
     cursor: pointer;
-    border-bottom: 1px dashed #474747;
+    border-bottom: 1px dashed #5c6cba;
     font-size: 13px;
     text-align: center;
-    background: #3d3d3d;
+    background: #4c7cba;
 }
 .bianji a {
     color: #fff;
 }
  
 .bianji .active {
-	color: #ff5706;
-    border-left: 3px solid #ff5706;
+	color: #55ee00;
+    border-left: 3px solid #55ee00;
     padding-left: 5px;
 }
 .silde {
@@ -528,7 +529,7 @@ label {
 	background: #037d88;
 }
 .navbar-nav .blue {
-	background: #00acf0;
+	background: #4c7cba;
 }
 .create {
     color: #fff !important;

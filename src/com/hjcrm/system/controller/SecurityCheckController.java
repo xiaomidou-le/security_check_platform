@@ -1,7 +1,10 @@
 package com.hjcrm.system.controller;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,9 +19,11 @@ import com.hjcrm.publics.constants.JumpViewConstants;
 import com.hjcrm.publics.constants.ReturnConstants;
 import com.hjcrm.publics.util.BaseController;
 import com.hjcrm.publics.util.UserContext;
+import com.hjcrm.system.entity.ScanReportDetail;
 import com.hjcrm.system.entity.ScanResultDetail;
-import com.hjcrm.system.entity.SecurityCheckList;
+import com.hjcrm.system.entity.SecurityCheckItem;
 import com.hjcrm.system.entity.SecurityScanResult;
+import com.hjcrm.system.entity.User;
 import com.hjcrm.system.service.ICheckListService;
 import com.hjcrm.system.service.IStartSecurityCheckService;
 
@@ -40,7 +45,7 @@ public class SecurityCheckController extends BaseController{
 	
 	@RequestMapping(value = "/checkList/securityUsecaseList.do", method = RequestMethod.GET)
 	public @ResponseBody String getCheckList(Integer pageSize, Integer currentPage){
-		List<SecurityCheckList> checkList = securityService.queryCheckList(processPageBean(pageSize, currentPage));
+		List<SecurityCheckItem> checkList = securityService.queryCheckList(processPageBean(pageSize, currentPage));
 		return jsonToPage(checkList);
 	}
 	
@@ -52,10 +57,17 @@ public class SecurityCheckController extends BaseController{
 	
 	@RequestMapping(value = "/checkList/securityCheckStart.do", method = RequestMethod.POST)
 	public @ResponseBody String startSecurityCheck(HttpServletRequest request, Long[] usecaseIds) {	
+		String BASE_PATH = "/Users/wangjing1/work/auto_check/inspec_test/www/";
+		User currUser = UserContext.getLoginUser();
+		String reportPath = BASE_PATH + currUser.getUsername() + "_" 
+							+ currUser.getUserid();
+	
 		ArrayList<ScanResultDetail> resultList = securityService.insertScanResult(usecaseIds);
 		if (usecaseIds != null) {
 			for (ScanResultDetail tmp : resultList) {
-				startCheckService.startSecurityCheck(tmp.getId(), tmp.getUsecaseId());
+				securityService.insertScanReport(currUser, reportPath);
+				
+				startCheckService.startSecurityCheck(tmp.getId(), tmp.getUsecaseId(), reportPath);
 			}	
 			return ReturnConstants.SUCCESS;
 		}

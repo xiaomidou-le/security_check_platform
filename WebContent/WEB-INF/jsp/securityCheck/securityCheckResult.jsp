@@ -29,6 +29,9 @@
 				</div>
 				<a href="javascript:;"  class="btn" style="background: #4c7cba;">查询</a>
 			</form>
+
+			<a href="javascript:;"  class="btn" style="background: #4c7cba;" onclick="exportSecurityCheckReport()">导出</a>
+	
 		</ul>
 	</div>
     <div class="bs-example table-responsive" data-example-id="simple-table"> 
@@ -41,6 +44,9 @@
                    <td class="text-primary">序号</td>
                    <td class="text-primary">检测项</td>
                    <td class="text-primary">描述</td>
+                   <td class="text-primary">创建人</td>
+                   <td class="text-primary">开始时间</td>
+                   <td class="text-primary">结束时间</td>
                    <td class="text-primary">检测结果</td>
                </tr> 
                <tr ng-repeat="tmp in list | filter:query " data-id="{{tmp.id}}">
@@ -48,6 +54,9 @@
                    <td ng-bind="{{(currentPage-1)*pageSize+($index+1)}}"></td>
                    <td ng-bind="tmp.name" class="username"></td>
                    <td ng-bind="tmp.description"></td>
+                   <td ng-bind="tmp.create_by"></td>
+                   <td ng-bind="tmp.create_time"></td>
+                   <td ng-bind="tmp.update_time"></td>
                    <td ng-bind="getScanResult(tmp.result)"></td>
                </tr>
 		</table>
@@ -62,77 +71,6 @@
 	      <span style="vertical-align: 30px;">&nbsp;&nbsp;共：{{pageTotal}} 页</span>
 	  	</nav>
     </div>
-	     
-
-	<!-- 筛选 -->
-	<div id="filter"  class="ui-wrap">
-		<div class="addnew-wrap">
-			<h2 class="wrap-tit">用户管理_筛选<span class="close closebtn"  onclick="wuorder.CloseDiv('filter','fade')">×</span></h2>
-			
-			<form class="form-horizontal add_form">				
-				<div class="form-group">
-					<label for="inputPassword3" class="col-md-2 control-label">性别：</label>
-					<div class="col-md-9">
-						<label class="radio-inline">
-						  <input type="radio" name="inlineRadioOptions" value="0">男
-						</label>
-						<label class="radio-inline">
-						  <input type="radio" name="inlineRadioOptions" value="1">女
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="inputPassword3" class="col-md-2 control-label">部门：</label>
-					<div class="col-md-9">
-						<select class="form-control" name="deptid" id="deptid">
-							<option  value="">请选择菜单</option>
-							<option  ng-repeat="option in deptname" value="{{option.deptid}}">{{option.deptname}}</option>
-						</select>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="inputPassword3" class="col-md-2 control-label">角色：</label>
-					<div class="col-md-9">
-						<select class="form-control" name="deptid" id="deptid">
-							<option value="">请选择角色</option>
-						</select>
-					</div>
-				</div>
-				
-				<div class="form-group">
-					<label for="inputPassword3" class="col-md-2 control-label">状态：</label>
-					<div class="col-md-9">
-						<label class="radio-inline">
-						  <input type="radio" name="checkboxOptions" value="0">可用						   
-						</label>
-						<label class="radio-inline">
-						  <input type="radio" name="checkboxOptions" value="1">不可用
-						</label>
-					</div>
-				</div>
-				
-				<div class="form-group">
-					<div class="col-md-offset-4 col-md-6">
-						<a href="javascript:;" class="btn" id="optcreate">保 存</a>
-						<a href="javascript:;"  class="btn"  onclick="wuorder.CloseDiv('filter','fade')" style="background: #4c7cba;">取消</a>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-	<!-- 提示 -->
-    <div class="themisWrap" style="display:none;" >
-      <div class="themisGray"></div>
-        <div class="themis" style="top:30%;">
-           <h3 class="themistit"><span class="themisTipPic" style="float: left;padding-top: 17px;padding-left: 10px;margin-right: 10px;"><img class="pic" src="../system/img/tishi.png" height="25" width="25" alt="" /></span>友情提示</h3>
-           <div class="themispay">
-                <div class="themistip" style="margin-bottom: 20px; color:red; font-size:14px;">确定删除这些信息吗!</div>
-                <button class="btn navbar-right" id="quxiao" >取消</button>
-                <button class="btn navbar-right" id="queding" style="background: #4c7cba;" onclick="del()">确定</button>                    
-                                    
-           </div>
-        </div>
-      </div>
 <script type="text/javascript" src="../common/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="../common/js/angular.min.js"></script>
 <script type="text/javascript" src="../common/js/winTip.js"></script>

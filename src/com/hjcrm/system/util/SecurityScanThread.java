@@ -5,26 +5,47 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.hjcrm.system.entity.ScanResultEnum;
+import com.hjcrm.system.entity.SecurityCheckItem;
 import com.hjcrm.system.service.ICheckListService;
 public class SecurityScanThread extends Thread{
 	private Long resultId;
 	private Long usecaseId;
+	private String reportPath;
 	private ICheckListService iCheckListService;
 	
-	public SecurityScanThread(Long resultId, Long usecaseId, ICheckListService iCheckListService) {
+	public SecurityScanThread(Long resultId, Long usecaseId, ICheckListService iCheckListService, String reportPath) {
 		super();
 		this.resultId = resultId;
 		this.usecaseId = usecaseId;
 		this.iCheckListService = iCheckListService;
+		this.reportPath = reportPath;
 	}
 	
+	public String getReportPath() {
+		return reportPath;
+	}
+
+	public void setReportPath(String reportPath) {
+		this.reportPath = reportPath;
+	}
+
+	public ICheckListService getiCheckListService() {
+		return iCheckListService;
+	}
+
+	public void setiCheckListService(ICheckListService iCheckListService) {
+		this.iCheckListService = iCheckListService;
+	}
+
 	public Long getResultId() {
 		return resultId;
 	}
@@ -58,8 +79,13 @@ public class SecurityScanThread extends Thread{
 
 	public void run() {
 		try {
-			String shell = "/bin/sh /Users/wangjing1/work/work_path_auto_check/inspec_check.sh";
-			Process process = Runtime.getRuntime().exec(shell);
+			SecurityCheckItem usecaseItem = iCheckListService.getSecurityCheckItem(usecaseId);
+			Date date = new Date();       
+			String currDate = new Timestamp(date.getTime()).toString().replaceAll("[[\\s-:punct:]]","");
+			String fileNamePre = usecaseItem.getName().replaceAll(" ","");
+			String reportFullPath = reportPath + "/" + fileNamePre + currDate + ".html";
+			String shellStr = "/bin/sh " + usecaseItem.getUrl() + " " + reportPath + " " + reportFullPath ;
+			Process process = Runtime.getRuntime().exec(shellStr);
 			List<Long> ids = new ArrayList<Long>();
 			ids.add(resultId);
 			int exitValue = process.waitFor();

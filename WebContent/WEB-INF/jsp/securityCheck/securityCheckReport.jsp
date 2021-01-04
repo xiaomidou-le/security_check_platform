@@ -42,6 +42,11 @@
 				</div>
 				<a href="javascript:;"  class="btn" style="background: #4c7cba;">查询</a>
 			</form>
+			<form class="navbar-form navbar-left" role="search">	
+			   <input type="text" name="ids" class="form-control check_tiaoj" ng-model="query">
+				<a href="javascript:;"  class="btn" style="background: #4c7cba;">导出</a>
+			</form>
+			
 			<li class="green" onclick="wuorder.ShowDiv('start','fade')">
 				<a href="javascript:;" class="create"><span class="glyphicon glyphicon-zoom-in"></span>启动</a>
 			</li>
